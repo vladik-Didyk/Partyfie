@@ -21,3 +21,9 @@ app.post('/', (req, res) => {
       .send('Hello, world!')
       .end();
   });
+app.put('/', (req, res) => {
+    res
+      .status(200)
+      .send('Hello, world!')
+      .end();
+  });
