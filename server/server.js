@@ -14,3 +14,10 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
+
+app.post('/', (req, res) => {
+    res
+      .status(200)
+      .send('Hello, world!')
+      .end();
+  });
