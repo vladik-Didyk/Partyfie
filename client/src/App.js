@@ -1,5 +1,6 @@
 import React from "react"
 import { useEffect } from "react"
+import localforage from "localforage";
 import './App.css';
 import NavBar from "./Components/NavBar"
 
@@ -36,8 +37,13 @@ function App() {
 
     } = getReturnedParamsFromSpotifyAuth(window.location.hash)
      console.log({ access_token })
+     const saveToken = async (access_token) => {
+      await localforage.setItem(access_token, expires_in, token_type);
+      return saveToken
+    };
     }
-  })
+   
+  });
 
   const handleLogin = () => {
     window.location = `${SPOTIFY_AUTHORIZE_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL_AFTER_LOGIN}&scope=${SCOPES_URL_PARAMS}&response_type=token&show_dialog=true`
