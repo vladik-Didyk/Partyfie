@@ -1,17 +1,45 @@
-
-
-
 import React from 'react'
+import './HomeCss.css'
+
+const HomePage = props => {
+
+      return (
+            <>
+                  <div className='showcase'>
+                        <div className='showcase-container'>
+                              <h2>Partyfie</h2>
+                              <p>
+                              Create playlists and share your best musics 
+                              </p>
+                        </div>
+                  </div>
+                  <footer className='footer'>
+                        <div className='footer-content'>
+                              {/* <img src='logo '/>  */}
+                              <ul className='footer-menu'>
+                                    <li className='footer-menu-item'>About</li>
+                                    <li className='footer-menu-item'>Artists</li>
+                                    <li className='footer-menu-item'>App</li>
+                                    <li className='footer-menu-item'>WebPayer</li>
 
 
-const HomePage =props => {
+                              </ul>
+                              {/* <ul className='footer-menu'>
+                                    
 
-return (
-  
-      <div>
 
-  </div>
-)
+                              </ul> */}
+                             
+                        <div className="socials">
+                              <i class="fab fa-instagram"></i>
+                              <i class="fab fa-facebook"></i>
+                              <i class="fab fa-twitter"></i>
+                        </div>
+                        </div>
+                        <div className="footer-bar">2021 Partyfie &copy;  </div>
+                  </footer>
+            </>
+      )
 
 }
 

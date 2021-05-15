@@ -15,27 +15,31 @@ const NavBar = props => {
     return (
 
       <div className={css.Navbar}>
-        <Link className={css.me_3} 
+        {/* <Link className={css.navLogo} 
+              to="/">
+          LogoImg
+        </Link> */}
+        <Link className={css.navitem} 
               to="/">
           Home
         </Link>
-        <Link className={css.me_3} 
+        <Link className={css.navitem} 
               to="/mypets">
           my music  
         </Link>
-        <Link className={css.me_3} 
+        <Link className={css.navitem} 
               to="/pets/:petId">
           Join a session
         </Link>
-        <Link className={css.me_3} 
+        <Link className={css.navitem} 
               to="/pets/new">
           Chat
         </Link>
-        <Link className={css.me_3} 
+        <Link className={css.navitem} 
               to="/Profile">
           Profile
         </Link>
-        <Link className={css.me_3} 
+        <Link className={css.navitem} 
               to="/Search">
           Search
         </Link>
@@ -43,7 +47,7 @@ const NavBar = props => {
          
       <div className={css.LogInAndSignIn}>
        <div className="nav-item nav-link LogIn" 
-                        style={{cursor:"pointer",color: "blue"}}
+                        style={{cursor:"pointer"}}
                         onClick={signInOrLogInClicked}
                         lang={'LogInPage'}
                         aria-current="page" 
@@ -51,7 +55,7 @@ const NavBar = props => {
                     </div>
                     &nbsp;&nbsp;
                     <div  className="nav-item nav-link SignIn" 
-                        style={{cursor:"pointer",color: "blue"}}
+                        style={{cursor:"pointer"}}
                         onClick={signInOrLogInClicked}
                         lang={'SignInPage'}
                         aria-current="page"

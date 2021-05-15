@@ -1,6 +1,10 @@
 
 body {
-  background-color: black;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: white;
+  font-family: "Roboto", sans-serif;
 }
 .login_form {
   @include flexbox;
@@ -17,13 +21,14 @@ body {
   background: #1fd100;
   padding: 1em 0;
   font-size: 1.25em;
+  text-transform: uppercase;
   clear: both;
-  color: #000;
+  color: white;
   @include border-radius(5px);
   outline: none;
   @include trans(all, .25s);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 30px;
   width: 50%;
   margin-left: 25%;
 
