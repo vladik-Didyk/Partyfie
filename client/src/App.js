@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import localforage from "localforage";
 import './App.css';
 // import LogInPage from './Components/LogInPage/LogInPage'
-import NavBar from "./NavBar/NavBar"
+import NavBar from "./Components/NavBar/NavBar"
 import Container from "./Components/Container";
 
 //https://accounts.spotify.com/authorize?client_id=5fe01282e94241328a84e7c5cc169164&redirect_uri=http:%2F%2Fexample.com%2Fcallback&scope=user-read-private%20user-read-email&response_type=token&state=123

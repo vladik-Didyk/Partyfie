@@ -1,8 +1,10 @@
 import React, {useState} from 'react'
-import NavBar from '../NavBar/NavBar'
-import SignInPage from './SignInPage/SignInPage'
-import LogInPage from './LogInPage/LogInPage'
+import NavBar from './NavBar/NavBar'
+import SignInPage from './Authorization/SignInPage/SignInPage'
+import LogInPage from './Authorization/LogInPage/LogInPage'
 import Modal from 'react-modal'
+import HomePage from './Container_HomePage/HomePage'
+import QueueMusic_Container from './Container_HomePage/QueueMusic/QueueMusic_Contanier'
 import {
   Switch,
   Route,
@@ -66,10 +68,12 @@ const Container = props => {
 
         </Modal>
     <Switch>
-
-
-
-  
+    <Route  exact 
+            path="/" 
+            component={HomePage} />
+    <Route  path="/my_music" 
+            component={'my_music'} />
+    
     </Switch>
 
     </>

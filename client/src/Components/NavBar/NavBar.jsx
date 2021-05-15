@@ -20,19 +20,19 @@ const NavBar = props => {
           Home
         </Link>
         <Link className={css.me_3} 
-              to="/mypets">
+              to="/my_music ">
           my music  
         </Link>
         <Link className={css.me_3} 
-              to="/pets/:petId">
+              to="/session/:id?">
           Join a session
         </Link>
         <Link className={css.me_3} 
-              to="/pets/new">
+              to="/Chat/new">
           Chat
         </Link>
         <Link className={css.me_3} 
-              to="/Profile">
+              to="/Profile/:id?">
           Profile
         </Link>
         <Link className={css.me_3} 
