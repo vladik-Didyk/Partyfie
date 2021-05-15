@@ -10,7 +10,7 @@ body {
   -webkit-align-items: center;
     align-items: center;
 }
-button {
+.loginToSpotifyAccount {
   width: 94%;
   margin: 2em 3% 0;
   border: none;

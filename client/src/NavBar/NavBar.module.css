@@ -1,0 +1,19 @@
+.Navbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 80px;
+  background: #1DB954;
+
+  
+}
+
+.LogInAndSignIn{
+  display: flex;
+  
+}
+
+.me_3{
+  text-decoration: none;
+  color: #000;
+}
