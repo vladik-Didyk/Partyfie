@@ -1,21 +1,22 @@
 const express = require('express');
 const router = express.Router();
-
-//create a session, join a session
+const { createSession, joinSession } = require("../data/session");
 
 router.post('/create', async (req, res, next) => {
     try {
-        const token = req.body;
+        const { token, password, maxNumListeners, sessionName } = req.body;
+        console.log(req.body);
+        const { _id, created_date, session_name } = await createSession(token, password, maxNumListeners, sessionName);
+        res.status(201).send({ session_id: _id, session_name, created_date });
     } catch (err) {
         next(err);
     }
-    
-    // from the create session form, take the information and create a table row with the user creating it as the token
 });
 
-router.post('/join/:sessionId', async (req, res, next) => {
+router.post('/join', async (req, res, next) => {
     try {
-        
+        const { token, sessionId, password } = req.body;
+        await joinSession(token, sessionId, password);
     } catch (err) {
         next(err);
     }
