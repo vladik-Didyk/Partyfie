@@ -3,6 +3,16 @@ import { useEffect } from "react"
 import localforage from "localforage";
 import './App.css';
 import NavBar from "./Components/NavBar"
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
+import AuthProvider, { useAuth } from "./Components/Auth";
+
+
 
 //https://accounts.spotify.com/authorize?client_id=5fe01282e94241328a84e7c5cc169164&redirect_uri=http:%2F%2Fexample.com%2Fcallback&scope=user-read-private%20user-read-email&response_type=token&state=123
 
@@ -26,6 +36,63 @@ const CLIENT_ID = "0a933f7d91e64b9096efbc218edaa4cc";
 
      return paramsSplitUp
   }
+
+  function PrivateRoute({ children, ...rest }) {
+  let auth = useAuth();
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          auth.token ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location },
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+  const AppRouter = () => {
+    let auth = useAuth();
+  
+    return (
+      <Router>
+        <Switch>
+          <Route path="/login">
+            {auth.token && <Redirect to="/"></Redirect>}
+            {!auth.token  }
+          </Route>
+  
+          <PrivateRoute path="/session/new">
+          </PrivateRoute>
+  
+          <PrivateRoute path="/profile">
+          </PrivateRoute>
+          
+          <PrivateRoute exact path="/m">
+          </PrivateRoute>
+  
+          <PrivateRoute path="/">
+          </PrivateRoute>
+          
+          <Route path="/user">
+          </Route>
+        </Switch>
+        <Route path="/search">
+        </Route>
+        <Route path="/pets/congratulation">
+        </Route>
+        <Route path="/profile">
+        </Route>
+      </Router>
+    );
+  };
+  
 
 function App() {
   useEffect(()=> {
