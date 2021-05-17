@@ -15,7 +15,7 @@ const HomePage = props => {
                   </div>
                   <footer className='footer'>
                         <div className='footer-content'>
-                              <img src='logo '/> 
+                              {/* <img src='logo '/>  */}
                               <ul className='footer-menu'>
                                     <li className='footer-menu-item'>About</li>
                                     <li className='footer-menu-item'>Artists</li>

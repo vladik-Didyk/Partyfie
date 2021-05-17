@@ -5,10 +5,6 @@ import './App.css';
 // import LogInPage from './Components/LogInPage/LogInPage'
 import NavBar from "./NavBar/NavBar"
 import HomePage from "./Components/HomePage/HomePage";
-//search process
-// import Search from "./Components/SearchPage/Search";
-// import Dashboard from "./Components/SearchPage/Dashboard"
-// import Login from "./Components/SearchPage/Login"
 
 
 //https://accounts.spotify.com/authorize?client_id=5fe01282e94241328a84e7c5cc169164&redirect_uri=http:%2F%2Fexample.com%2Fcallback&scope=user-read-private%20user-read-email&response_type=token&state=123
@@ -48,8 +44,8 @@ function App() {
      console.log({ access_token })
      const saveToken = async (access_token) => {
       await localforage.setItem(access_token, expires_in, token_type);
-      return saveToken
     };
+    return saveToken
     }
    
   });

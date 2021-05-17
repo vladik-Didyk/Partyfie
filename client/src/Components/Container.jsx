@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import NavBar from '../NavBar/NavBar'
-import SignInPage from './SignInPage/SignInPage'
+
 import LogInPage from './LogInPage/LogInPage'
 import Modal from 'react-modal'
 import {
@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 const modalIsOpen = {
-  SignInPage: false,
+  // SignInPage: false,
   LogInPage: false
 }
 
@@ -46,12 +46,8 @@ const Container = props => {
     />
 
 <Modal style={style}
-            isOpen={modal.SignInPage}
+            isOpen={}
             ariaHideApp={false}>
-          <SignInPage modal={modalIsOpen}
-            setModal={setModal}
-            LogInPage={setModal} />
-
         </Modal>
         <Modal style={style}
             isOpen={modal.LogInPage}

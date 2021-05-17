@@ -8,59 +8,34 @@ import {
 
 const NavBar = props => {
 
-  const signInOrLogInClicked = element => {
-    props.setModal({...props.modal, [element.target.lang] : true})
-}
-
     return (
 
       <div className={css.Navbar}>
-        {/* <Link className={css.navLogo} 
-              to="/">
-          LogoImg
-        </Link> */}
         <Link className={css.navitem} 
               to="/">
           Home
         </Link>
         <Link className={css.navitem} 
-              to="/mypets">
-          my music  
+              to="/new_session">
+            Create a Session
         </Link>
         <Link className={css.navitem} 
-              to="/pets/:petId">
+              to="/join_session">
           Join a session
         </Link>
-        <Link className={css.navitem} 
-              to="/pets/new">
-          Chat
-        </Link>
-        <Link className={css.navitem} 
-              to="/Profile">
-          Profile
-        </Link>
-        <Link className={css.navitem} 
-              to="/Search">
-          Search
-        </Link>
-       {/* <button className="signout">Sign out</button> */}
          
       <div className={css.LogInAndSignIn}>
-       <div className="nav-item nav-link LogIn" 
-                        style={{cursor:"pointer"}}
-                        onClick={signInOrLogInClicked}
-                        lang={'LogInPage'}
-                        aria-current="page" 
-                        >Log In
-                    </div>
-                    &nbsp;&nbsp;
-                    <div  className="nav-item nav-link SignIn" 
-                        style={{cursor:"pointer"}}
-                        onClick={signInOrLogInClicked}
-                        lang={'SignInPage'}
-                        aria-current="page"
-                        > Sign In
-                    </div>
+      <Link className={css.navitem} 
+              to="/profile">
+          My Profile
+        </Link>
+        &nbsp;&nbsp;
+        <Link className={css.navitem} 
+              to="/logout">
+          Log Out
+        </Link>
+                    
+                    
       </div>
       </div>
     );
