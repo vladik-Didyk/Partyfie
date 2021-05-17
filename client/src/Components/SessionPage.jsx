@@ -2,6 +2,7 @@ import { useAuth } from "./Auth";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import audioFile from "../test.mp3";
+import "../App.css";
 
 const socket = io.connect("http://localhost:8080/");
 
@@ -50,10 +51,10 @@ export default function SessionPage() {
   }
 
   return (
-    <div classname="sessionp">
+    <div className="sessionp">
       <h1>Session Page</h1>
       <h1>Soundbot</h1>
-      <div>
+      <div className="sound-bot-card">
         <h4>Role</h4>
         <button onClick={() => setRole("client")}>Client</button>
         <button onClick={() => setRole("server")}>Server</button>
