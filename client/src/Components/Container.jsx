@@ -8,8 +8,6 @@ import {
   Route,
 } from "react-router-dom";
 
-
-
 const modalIsOpen = {
   SignInPage: false,
   LogInPage: false
