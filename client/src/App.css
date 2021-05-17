@@ -5,6 +5,9 @@ body {
   background-color: white;
   font-family: "Roboto", sans-serif;
 }
+h1,h4,p{
+  margin: 0px
+}
 .login_form {
   @include flexbox;
   @include flex(center);
@@ -43,4 +46,6 @@ button:hover {
   background-color: sandybrown;
   margin-top: 65px;
   text-align: center;
+  
 }
+
