@@ -1,0 +1,11 @@
+
+.QueueMusicItem{
+height: 100px;
+background: blue;
+margin: 100px;
+}
+
+.imgOfSong{
+  width: 100px;
+  height: 100%;
+}
