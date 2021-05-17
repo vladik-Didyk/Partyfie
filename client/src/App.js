@@ -58,16 +58,13 @@ function App() {
     window.location = `${SPOTIFY_AUTHORIZE_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL_AFTER_LOGIN}&scope=${SCOPES_URL_PARAMS}&response_type=token&show_dialog=true`
   }
 
-  //Login2 for search 
-  const code = new URLSearchParams(window.location.search).get("code")
-  //end
 
   
   return (
     <>
     <div className ="login_form">
 
-   
+    <NavBar/>
      <button  className='loginToSpotifyAccount' 
               onClick={handleLogin}
               > Login to Spotify 
