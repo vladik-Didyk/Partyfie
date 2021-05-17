@@ -10,17 +10,17 @@ const NavBar = props => {
 
     return (
 
-      <div className={css.Navbar}>
+      <div className={css.Navbar} >
         <Link className={css.navitem} 
               to="/">
           Home
         </Link>
         <Link className={css.navitem} 
-              to="/new_session">
+              to="/session/create">
             Create a Session
         </Link>
         <Link className={css.navitem} 
-              to="/join_session">
+              to="/session/join">
           Join a session
         </Link>
          

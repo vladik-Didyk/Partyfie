@@ -1,6 +1,5 @@
 import React from 'react'
 import './HomeCss.css'
-
 const HomePage = props => {
 
       return (
@@ -8,8 +7,9 @@ const HomePage = props => {
                   <div className='showcase'>
                         <div className='showcase-container'>
                               <h2>Partyfie</h2>
+                                    
                               <p>
-                              Create playlists and share your best musics 
+                                    Create playlists and share your best musics
                               </p>
                         </div>
                   </div>
@@ -29,12 +29,12 @@ const HomePage = props => {
 
 
                               </ul> */}
-                             
-                        <div className="socials">
-                              <i className="fab fa-instagram"></i>
-                              <i className="fab fa-facebook"></i>
-                              <i className="fab fa-twitter"></i>
-                        </div>
+
+                              <div className="socials">
+                                    <i className="fab fa-instagram"></i>
+                                    <i className="fab fa-facebook"></i>
+                                    <i className="fab fa-twitter"></i>
+                              </div>
                         </div>
                         <div className="footer-bar">2021 Partyfie &copy;  </div>
                   </footer>

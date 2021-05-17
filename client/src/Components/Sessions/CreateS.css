@@ -1,0 +1,19 @@
+#formBasicEmail{ 
+
+    font-family: "Roboto", sans-serif;
+    font-style: bold;
+}
+.create-session{
+    color: #ADFF2E;
+    background-color: #ADFF2E !important;
+    border-color: #813AFE !important;
+}
+
+.icon-img{
+    width: 70px;
+    height: 70px;
+    margin-bottom: 2rem;
+}
+.reset{
+    color: black;
+}
