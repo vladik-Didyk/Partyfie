@@ -40,7 +40,6 @@ const HomePage = (props) => {
         getToken();
     });
 
-
     return (
         <>
             <div className="showcase">

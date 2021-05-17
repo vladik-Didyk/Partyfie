@@ -50,7 +50,7 @@ export default function SessionPage() {
   }
 
   return (
-    <div classname="sessionp"style={{ color: "white" }}>
+    <div classname="sessionp">
       <h1>Session Page</h1>
       <h1>Soundbot</h1>
       <div>
