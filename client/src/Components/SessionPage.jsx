@@ -1,70 +1,69 @@
 import { useAuth } from "./Auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import audioFile from "../test.mp3";
 import "../App.css";
 
-const socket = io.connect("http://localhost:8080/");
-
-const audio = new Audio();
+const socket = io.connect("http://localhost:8080");
 
 export default function SessionPage() {
   const { token } = useAuth();
-  const [role, setRole] = useState("");
-  const [playing, setPlaying] = useState("");
+  const [state, setState] = useState({ message: "", name: "" });
+  const [chat, setChat] = useState([]);
+  const socketRef = useRef();
 
   useEffect(() => {
-    function reciveMessage(m) {
-      console.log(m);
-      if (role === "server") {
-        audio.src = m.path;
-        audio.play();
-      }
-      setPlaying(m.name);
-    }
+    socketRef.current = io.connect("http://localhost:8080");
+    socketRef.current.on("message", ({ name, message }) => {
+      setChat([...chat, { name, message }]);
+    });
+    return () => socketRef.current.disconnect();
+  }, [chat]);
 
-    function stopAudio() {
-      setPlaying("");
-    }
+  const onTextChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
 
-    socket.on("play", reciveMessage);
-    socket.on("stop", stopAudio);
-
-    return () => {
-      socket.off("play", reciveMessage);
-      socket.off("stop", stopAudio);
-    };
-  }, [role]);
-  useEffect(() => {
-    function handleAudioStop() {
-      socket.emit("stop");
-    }
-    audio.addEventListener("pause", handleAudioStop);
-
-    return () => {
-      audio.removeEventListener("pause", handleAudioStop);
-    };
-  }, []);
-
-  function handlePlaySound() {
-    socket.emit("play", { name: "Test sound 1", path: audioFile });
-  }
-
+  const onMessageSubmit = (e) => {
+    const { name, message } = state;
+    socketRef.current.emit("message", { name, message });
+    e.preventDefault();
+    setState({ message: "", name });
+  };
+  const renderChat = () => {
+    return chat.map(({ name, message }, index) => (
+      <div key={index}>
+        <h3>
+          {name}: <span>{message}</span>
+        </h3>
+      </div>
+    ));
+  };
   return (
-    <div className="sessionp">
-      <h1>Session Page</h1>
-      <h1>Soundbot</h1>
-      <div className="sound-bot-card">
-        <h4>Role</h4>
-        <button onClick={() => setRole("client")}>Client</button>
-        <button onClick={() => setRole("server")}>Server</button>
-      </div>
-      <div>
-        <h4>Choose sound</h4>
-        <button onClick={handlePlaySound}>Play sound!</button>
-      </div>
-      <div>
-        <h4>Playing {playing}</h4>
+    <div className="card">
+      <form onSubmit={onMessageSubmit}>
+        <h1>Messenger</h1>
+        <div className="name-field">
+          <input
+            name="name"
+            onChange={(e) => onTextChange(e)}
+            value={state.name}
+            label="Name"
+          />
+        </div>
+        <div>
+          <input
+            name="message"
+            onChange={(e) => onTextChange(e)}
+            value={state.message}
+            label="Message"
+          />
+        </div>
+        <button>Send Message</button>
+      </form>
+      <div className="render-chat">
+        <h1>Chat Log</h1>
+        {renderChat()}
       </div>
     </div>
   );
