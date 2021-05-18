@@ -13,7 +13,10 @@ export default function SessionPage() {
     const [spotifyDevice, setSpotifyDevice] = useState("");
     const [state, setState] = useState({ message: "", name: "" });
     const [chat, setChat] = useState([]);
+    const [queue, setQueue] = useState([]);
     const socketRef = useRef();
+
+    const sessionId = "60a3eca767ff83bffd970bfa";
 
     const onTextChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value });
@@ -53,25 +56,39 @@ export default function SessionPage() {
             `https://api.spotify.com/v1/search?q=${searchText}&type=track&limit=5&offset=0`,
             getAuthConfig(token)
         );
-        console.log(response);
         if (response.data.tracks.items.length !== 0) {
             setSearchResults(response.data.tracks.items);
         }
     }
 
+    async function handleOnAddQueue(uri) {
+        const response = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
+        if (response.data.queue) {
+            setQueue(response.data.queue);
+        }
+    }
+
     useEffect(() => {
-        console.log(spotifyDevice);
         async function fetchSpotifyDevice() {
             const response = await axios.get(
                 "https://api.spotify.com/v1/me/player/devices",
                 getAuthConfig(token)
             );
-            if (response.data.devices) {
+            if (response.data.devices.length !== 0) {
                 setSpotifyDevice(response.data.devices[0].id);
             }
         }
+
+        async function fetchSessionQueue() {
+            const response = await axios.get(`http://localhost:8080/session/${sessionId}/queue`);
+            if (response.data.queue) {
+                setQueue(response.data.queue);
+            }
+        }
+
         fetchSpotifyDevice();
-    }, [spotifyDevice, token]);
+        fetchSessionQueue();
+    }, [spotifyDevice, token, queue]);
 
     useEffect(() => {
         socketRef.current = io.connect("http://localhost:8080");
@@ -109,9 +126,7 @@ export default function SessionPage() {
                                     ></iframe>
                                 </li>
                                 <button
-                                    onClick={() => {
-                                        console.log(result.uri);
-                                    }}
+                                    onClick={() => handleOnAddQueue(result.uri)}
                                 >
                                     Add to queue
                                 </button>
@@ -120,6 +135,12 @@ export default function SessionPage() {
                     })}
                 </ul>
             )}
+            <div className="queue" style={{ border: "1px solid black"}}>
+                <h1>Queue</h1>
+                    {queue.map((song) => {
+                        return <li key={song}>{song}</li>;
+                    })}
+            </div>
             <div className="card">
                 <form onSubmit={onMessageSubmit}>
                     <h1>Messenger</h1>
