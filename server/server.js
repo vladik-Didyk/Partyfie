@@ -15,15 +15,12 @@ app.use(require("cors")());
 
 app.use(express.json());
 app.use("/session", sessionRouter);
-
 io.on("connection", (socket) => {
-  console.log("Connected");
-
-  socket.on("play", (playMsg) => {
-    io.emit("play", playMsg);
+  socket.on("message", ({ name, message }) => {
+    io.emit("message", { name, message });
   });
-  socket.on("stop", (msg) => io.emit("stop"));
 });
+
 
 const PORT = process.env.PORT || 8080;
 
