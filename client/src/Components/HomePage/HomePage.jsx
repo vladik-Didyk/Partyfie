@@ -10,7 +10,7 @@ const HomePage = (props) => {
     const REDIRECT_URL_AFTER_LOGIN = "http://localhost:3000";
     const SPOTIFY_AUTHORIZE_ENDPOINT = "https://accounts.spotify.com/authorize";
 
-    const SCOPES = ["user-read-currently-playing"];
+    const SCOPES = ["user-read-playback-state", "user-modify-playback-state"];
     const SPACE_DELIMITER = "%20";
     const SCOPES_URL_PARAMS = SCOPES.join(SPACE_DELIMITER);
 
