@@ -15,8 +15,8 @@ app.use(require("cors")());
 app.use(express.json());
 app.use("/session", sessionRouter);
 io.on("connection", (socket) => {
-  socket.on("message", ({ name, message }) => {
-    io.emit("message", { name, message });
+  socket.on("message", ({ username, chatMessage }) => {
+    io.emit("message", { username, chatMessage });
   });
   socket.on("song_queued", (track) => {
     io.emit("song_queued", track);

@@ -5,10 +5,14 @@
   justify-content: space-between;
   height: 60px;
   padding: 0.8px;
-  /* background: #1DB954; */
+  padding-left: 40px;
   position: fixed;
   top: 0;
   width: 100%;
+}
+
+.Navbar :hover{
+  color: #ffffff;
 }
 
 .LogInAndSignIn {
@@ -26,6 +30,7 @@
 
 .navLogo{ 
   align-items: center;
+  margin-left: 40px;
   width: auto;
   height: 50px;
 }

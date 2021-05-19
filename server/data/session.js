@@ -17,6 +17,7 @@ client.connect().then((response) => {
 
 async function createSession(token, password, maxNumListeners, sessionName) {
     try {
+        console.log(maxNumListeners);
         const newSession = {
             session_admin: token,
             session_name: sessionName,
@@ -34,8 +35,19 @@ async function createSession(token, password, maxNumListeners, sessionName) {
 }
 exports.createSession = createSession;
 
-async function joinSession(token, sessionId, password) {
-
+async function joinSession(token, sessionName, password) {
+    try {
+        const session = await sessions_collection.findOne({$and: [{ session_name: sessionName }, { session_password: password }]});
+        const update = await sessions_collection.updateOne(
+            {
+              _id: ObjectID(session._id),
+            },
+            { $push: { listeners: token } }
+          );
+        return session._id;
+    } catch (err) {
+        console.log(err.stack);
+    }
 }
 exports.joinSession = joinSession;
 
@@ -68,3 +80,17 @@ async function addToQueue(sessionId, uri) {
       }
 }
 exports.addToQueue = addToQueue;
+
+async function removeFromQueue(sessionId, uri) {
+    try {
+        const update = await sessions_collection.updateOne(
+            {
+                _id: ObjectID(sessionId),
+            },
+            { $pop: {session_queue: -1 } }
+        );
+    } catch (err) {
+        console.log(err.stack);
+    }
+}
+exports.removeFromQueue = removeFromQueue;

@@ -6,6 +6,7 @@
 }
 
 .sessionp{
+  padding-top: 60px;
   display: flex;
   width: 100vw;
   height: 100vh;
@@ -18,7 +19,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9b0000', end
 
 .leftSide_Container{
 height: 100%;
-width: 65%;
+width: 69%;
 }
 
 .searchSessionp{
@@ -100,7 +101,7 @@ border-left:42px solid #1CD860 ;
 
 .RigthSide_Container{
 height: 100%;
-width: 35%;
+width: 31%;
 }
 
 .nameField{
@@ -130,8 +131,9 @@ width: 35%;
 }
 
 .card{
-  position: absolute;
-  bottom: 0;
+  /* position: absolute; */
+  /* bottom: 0; */
+  /* z-index: 1; */
 }
 .ol_queueOfSongs{
   padding: 0px;
