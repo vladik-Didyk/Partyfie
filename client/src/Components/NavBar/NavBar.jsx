@@ -5,9 +5,16 @@ import {
     Link,
   } from "react-router-dom";
 
+  import localforage from "localforage"
+
 
 
 const NavBar = props => {
+
+  const signOut = async () => {
+    await localforage.removeItem("userToken");
+    window.location.assign("/")
+  };
 
     return (
 
@@ -31,7 +38,7 @@ const NavBar = props => {
           My Profile
         </Link>
         &nbsp;&nbsp;
-        <Link className={css.navitem} 
+        <Link onClick={()=>signOut()} className={css.navitem} 
               to="/logout">
           Log Out
         </Link>

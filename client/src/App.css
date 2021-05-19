@@ -5,6 +5,9 @@ body {
   background-color: white;
   font-family: "Roboto", sans-serif;
 }
+h1,h4,p{
+  margin: 0px
+}
 .login_form {
   @include flexbox;
   @include flex(center);
@@ -17,7 +20,7 @@ body {
   width: 94%;
   margin: 2em 3% 0;
   border: none;
-  background: #1fd100;
+  background: #1CD860;
   padding: 1em 0;
   font-size: 1.25em;
   text-transform: uppercase;
@@ -29,7 +32,9 @@ body {
   cursor: pointer;
   border-radius: 30px;
   width: 50%;
-  margin-left: 25%;
+  margin-left: 10%;
+  margin-top: -10%;
+
 }
 button:focus,
 button:hover {
@@ -42,6 +47,7 @@ button:hover {
   align-items: center;
   margin-top: 65px;
   text-align: center;
+  
 }
 .card {
   display: grid;
