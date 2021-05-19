@@ -10,6 +10,7 @@ import SessionPage from "./Components/SessionPage";
 import './App.css';
 import HomePage from "./Components/HomePage/HomePage";
 import NavBar from "./Components/NavBar/NavBar";
+import Profile from './Components/ProfilePage/Profile';
 
 function AppRouter() {
 
@@ -22,6 +23,9 @@ function AppRouter() {
                 </Route>
                 <Route exact path="/session">
                     <SessionPage />
+                </Route>
+                <Route exact path="/Profile">
+                    <Profile />
                 </Route>
             </Switch>
         </Router>
