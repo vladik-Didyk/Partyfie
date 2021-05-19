@@ -213,8 +213,6 @@ export default function SessionPage() {
                             </li>
                         })}
                     </ol>
-
-
                         {token && queue && <SpotifyPlayer
                             autoPlay={true}
                             callback={(state) => handlePlayerCallback(state)}
