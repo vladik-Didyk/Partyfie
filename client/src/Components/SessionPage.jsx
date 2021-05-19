@@ -3,27 +3,22 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import "../App.css";
 import axios from "axios";
-import Player from "../Components/player/Player"
 import SpotifyPlayer from 'react-spotify-web-playback'
-
+import { useParams } from "react-router";
 
 export default function SessionPage() {
     const { token } = useAuth();
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [state, setState] = useState({ message: "", name: "" });
+    const [chatMessage, setChatMessage] = useState('');
     const [chat, setChat] = useState([]);
-    const [playingTrack, setPlayingTrack] = useState();
     const [queue, setQueue] = useState([]);
     const [username, setUsername] = useState("");
     const [isPlaying, setIsPlaying] = useState(false);
+    const [nextTracks, setNextTracks] = useState([]);
     const socketRef = useRef();
-
-    const sessionId = "60a3eca767ff83bffd970bfa";
-
-    const onTextChange = (e) => {
-        setState({ ...state, [e.target.name]: e.target.value });
-    };
+    const params = useParams();
+    const sessionId = params.id;
 
     const chooseTrack = () => {
         setSearchText("")
@@ -31,17 +26,16 @@ export default function SessionPage() {
     }
 
     const onMessageSubmit = (e) => {
-        const { name, message } = state;
-        socketRef.current.emit("message", { name, message });
+        socketRef.current.emit("message", { username, chatMessage });
         e.preventDefault();
-        setState({ message: "", name });
+        setChatMessage("");
     };
 
     const renderChat = () => {
-        return chat.map(({ name, message }, index) => (
+        return chat.map(({ username, chatMessage }, index) => (
             <div key={index}>
                 <h3>
-                    {name}: <span>{message}</span>
+                    {username}: <span>{chatMessage}</span>
                 </h3>
             </div>
         ));
@@ -71,10 +65,30 @@ export default function SessionPage() {
     }
 
     async function handleOnAddQueue(uri) {
-        const updatedQueue = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
+        await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
         socketRef.current.emit("song_queued", uri);
         //const uriSplit = uri.split(":");
         // chooseTrack(uri);
+    }
+
+    async function handlePlayerCallback(state) {
+        setIsPlaying(state.isPlaying);
+        if (state.status === "INITIALIZING") {
+            return;
+        }
+        const prev = nextTracks;
+       
+        if (state.nextTracks.length < prev.length) {
+            const newQueue = queue.slice(1);
+            await axios.put(`http://localhost:8080/session/${sessionId}/queue`, { uri: queue[0] });
+            setQueue(newQueue);
+        }
+        else if (state.nextTracks.length === 0 && !state.isPlaying){
+            await axios.put(`http://localhost:8080/session/${sessionId}/queue`, { uri: queue[0] });
+            setQueue([]);
+        }
+        
+        setNextTracks(state.nextTracks);
     }
 
     useEffect(() => {
@@ -105,12 +119,12 @@ export default function SessionPage() {
             console.log(err);
         }
         
-    }, [token]);
+    }, [token, sessionId]);
 
     useEffect(() => {
         socketRef.current = io.connect("http://localhost:8080");
-        socketRef.current.on("message", ({ name, message }) => {
-            setChat([...chat, { name, message }]);
+        socketRef.current.on("message", ({ username, chatMessage }) => {
+            setChat([...chat, { username, chatMessage }]);
         });
         socketRef.current.on("song_queued", async (track) => {
             try {
@@ -174,19 +188,11 @@ export default function SessionPage() {
             <div className="card">
                 <form onSubmit={onMessageSubmit}>
                     <h1>Messenger</h1>
-                    <div className="name-field">
-                        <input
-                            name="name"
-                            onChange={(e) => onTextChange(e)}
-                            value={state.name}
-                            label="Name"
-                        />
-                    </div>
                     <div>
                         <input
                             name="message"
-                            onChange={(e) => onTextChange(e)}
-                            value={state.message}
+                            onChange={(e) => setChatMessage(e.target.value)}
+                            value={chatMessage}
                             label="Message"
                         />
                     </div>
@@ -198,19 +204,9 @@ export default function SessionPage() {
                 </div>
                 <div>
                     {/* <Player token={token} uris={queue ? queue : []} /> */}
-                    {token && <SpotifyPlayer
+                    {token && queue && <SpotifyPlayer
                         autoPlay={true}
-                        callback={(state) => {
-                            setIsPlaying(state.isPlaying);
-                            if (state.nextTracks) {
-                                console.log("nextTracks", state.nextTracks.length);
-                            }
-                            console.log("queue", queue.length);
-                            if (state.isPlaying && state.nextTracks && state.nextTracks.length - queue.length === -2) {
-                                const prev = queue.slice(1);
-                                setQueue(prev);
-                            }
-                        }}
+                        callback={(state) => handlePlayerCallback(state)}
                         token={token}
                         play={isPlaying}
                         uris={queue}
