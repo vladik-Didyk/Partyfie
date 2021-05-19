@@ -13,7 +13,6 @@ export default function CreateS() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const sessionList = { sessionName, sessionPass, sessionUsers };
     await axios.post("http://localhost:8080/session/create", {
       sessionName: nameSession,
       password: sessionPass,
@@ -41,7 +40,7 @@ export default function CreateS() {
                   autoComplete="off"
                   value={nameSession}
                   onChange={(event) => {
-                    setSessionName(event.target.value);
+                    setNameSession(event.target.value);
                   }}
                 />
               </Form.Group>
