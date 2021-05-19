@@ -1,10 +1,34 @@
 import React from 'react';
-
+import NavBar from '../NavBar/NavBar';
+import css from './Profile.module.css';
 function Profile() {
     return (
         <>
+            <NavBar/>
              <div className="showcase">
-            
+
+<table className="tg">
+<thead>
+  <tr>
+    <th className="tg-biwy">Username</th>
+    <th className="tg-p1dc"></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td className="tg-p1dc">Spotify Link</td>
+    <td className="tg-p1dc"></td>
+  </tr>
+  <tr>
+    <td className="tg-p1dc">User Detail I:</td>
+    <td className="tg-p1dc"></td>
+  </tr>
+  <tr>
+    <td className="tg-p1dc">User Detail II:</td>
+    <td className="tg-p1dc"></td>
+  </tr>
+</tbody>
+</table>
 
 
 
@@ -19,9 +43,9 @@ function Profile() {
                         <li className="footer-menu-item">WebPayer</li>
                     </ul>
                     <div className="socials">
-                        <i class="fab fa-instagram"></i>
-                        <i class="fab fa-facebook"></i>
-                        <i class="fab fa-twitter"></i>
+                        <i className="fab fa-instagram"></i>
+                        <i className="fab fa-facebook"></i>
+                        <i className="fab fa-twitter"></i>
                     </div>
                 </div>
                 <div className="footer-bar">2021 Partyfie &copy; </div>
