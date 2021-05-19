@@ -4,17 +4,19 @@ import io from "socket.io-client";
 import "../App.css";
 import axios from "axios";
 import Player from "../Components/player/Player"
+import SpotifyPlayer from 'react-spotify-web-playback'
+
 
 export default function SessionPage() {
     const { token } = useAuth();
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [spotifyDevice, setSpotifyDevice] = useState("");
     const [state, setState] = useState({ message: "", name: "" });
     const [chat, setChat] = useState([]);
     const [playingTrack, setPlayingTrack] = useState();
     const [queue, setQueue] = useState([]);
     const [username, setUsername] = useState("");
+    const [isPlaying, setIsPlaying] = useState(false);
     const socketRef = useRef();
 
     const sessionId = "60a3eca767ff83bffd970bfa";
@@ -23,8 +25,7 @@ export default function SessionPage() {
         setState({ ...state, [e.target.name]: e.target.value });
     };
 
-    const chooseTrack = (track) => {
-        setPlayingTrack(track)
+    const chooseTrack = () => {
         setSearchText("")
         setSearchResults([])
     }
@@ -70,12 +71,10 @@ export default function SessionPage() {
     }
 
     async function handleOnAddQueue(uri) {
-        await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
+        const updatedQueue = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
         socketRef.current.emit("song_queued", uri);
-        const uriSplit = uri.split(":");
-        await axios.post(`https://api.spotify.com/v1/me/player/queue?uri=${uriSplit[0]}%3A${uriSplit[1]}%3A${uriSplit[2]}&device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-        console.log("uri", uri);
-        chooseTrack(uri);
+        //const uriSplit = uri.split(":");
+        // chooseTrack(uri);
     }
 
     useEffect(() => {
@@ -91,27 +90,21 @@ export default function SessionPage() {
     }, [token]);
 
     useEffect(() => {
-        async function fetchSpotifyDevice() {
-            if (token){
-                const response = await axios.get(
-                    "https://api.spotify.com/v1/me/player/devices",
-                    getAuthConfig(token)
-                );
-                if (response.data.devices.length !== 0) {
-                    setSpotifyDevice(response.data.devices[0].id);
-                }
-            }
-        }
-
         async function fetchSessionQueue() {
             const response = await axios.get(`http://localhost:8080/session/${sessionId}/queue`);
             if (response.data.queue) {
+                chooseTrack();
                 setQueue(response.data.queue);
+                setIsPlaying(true);
             }
         }
 
-        fetchSpotifyDevice();
-        fetchSessionQueue();
+        try {
+            fetchSessionQueue();
+        } catch (err) {
+            console.log(err);
+        }
+        
     }, [token]);
 
     useEffect(() => {
@@ -121,28 +114,19 @@ export default function SessionPage() {
         });
         socketRef.current.on("song_queued", async (track) => {
             try {
-                const prev = queue;
-                setQueue([...queue, track]);
-                // if (prev.length === 0) {
-                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-                //     chooseTrack(track);
-                // }
-                // else {
-                //     let response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
-                //     console.log(response.data);
-                //     // while (response.data.item.uri !== track) {
-                //     //     setTimeout(async () => {
-                //     //         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
-                //     //     }, 3000);
-                //     // }
-                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-                // }
+                const prev = [...queue, track];
+                setQueue(prev);
+                chooseTrack();
+                if (prev.length === 1){
+                    setIsPlaying(true);
+                }
+                chooseTrack();
             } catch (err) {
                 console.log(err);
             }
         });
         return () => socketRef.current.disconnect();
-    }, [chat, queue, token, spotifyDevice]);
+    }, [chat, queue, token]);
 
     return (
         <div className="sessionp">
@@ -213,7 +197,25 @@ export default function SessionPage() {
                     {renderChat()}
                 </div>
                 <div>
-                    <Player token = {token} trackUri={playingTrack ? playingTrack : ""} />
+                    {/* <Player token={token} uris={queue ? queue : []} /> */}
+                    {token && <SpotifyPlayer
+                        autoPlay={true}
+                        callback={(state) => {
+                            setIsPlaying(state.isPlaying);
+                            if (state.nextTracks) {
+                                console.log("nextTracks", state.nextTracks.length);
+                            }
+                            console.log("queue", queue.length);
+                            if (state.isPlaying && state.nextTracks && state.nextTracks.length - queue.length === -2) {
+                                const prev = queue.slice(1);
+                                setQueue(prev);
+                            }
+                        }}
+                        token={token}
+                        play={isPlaying}
+                        uris={queue}
+                        showSaveIcon
+                    />}
                 </div>
             </div>
         </div>
