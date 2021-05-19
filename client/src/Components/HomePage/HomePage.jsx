@@ -10,7 +10,7 @@ const HomePage = (props) => {
     const REDIRECT_URL_AFTER_LOGIN = "http://localhost:3000";
     const SPOTIFY_AUTHORIZE_ENDPOINT = "https://accounts.spotify.com/authorize";
 
-    const SCOPES = ["user-read-currently-playing"];
+    const SCOPES = ["streaming", "user-read-playback-state", "user-modify-playback-state", "user-read-email", "user-read-private", "user-library-read", "user-library-modify"];
     const SPACE_DELIMITER = "%20";
     const SCOPES_URL_PARAMS = SCOPES.join(SPACE_DELIMITER);
 
@@ -45,10 +45,10 @@ const HomePage = (props) => {
             <div className="showcase">
                 <div className="showcase-container">
                     <h2>Partyfie</h2>
-                    <button  className='loginToSpotifyAccount' 
+                    {!token && <button  className='loginToSpotifyAccount' 
                         onClick={handleLogin}
                         > Login to Spotify 
-                    </button>
+                    </button>}
                     <p>Create playlists and share your best musics</p>
                 </div>
             </div>

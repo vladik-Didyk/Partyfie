@@ -1,0 +1,183 @@
+.BtnSessionZero{
+  margin: 0;
+  padding: 0;
+  border:  none;
+  border-radius: none;
+}
+
+.sessionp{
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background: #9b0000; /* Old browsers */
+background: -moz-linear-gradient(top, #9b0000 0%, #000000 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #9b0000 0%,#000000 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #9b0000 0%,#000000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9b0000', endColorstr='#000000',GradientType=0 );
+}
+
+.leftSide_Container{
+height: 100%;
+width: 65%;
+}
+
+.searchSessionp{
+  height: 5%;
+  display: flex;  
+  align-items: center;
+  position: relative;
+}
+
+#spotify-search{
+height: 100%;
+width: 100%;
+padding: 0 80px 0 10px;
+background: rgba(5, 4, 4, 0.808);
+color: white;
+border: none;
+font-size: 2vw;
+font-weight: 500;
+
+}
+
+.sessionBtnOfSearch{
+ position: absolute;
+ right: 0;
+ width: 70px;
+ color: white;
+ background: transparent !important;
+ height: 100%;
+ font-size: 16px;
+ font-family: "Roboto", sans-serif;
+ font-weight: 700;
+}
+.sessionBtnOfSearch:hover {
+  border-radius: 0 !important;
+  border: none !important;
+  background: #1CD860 !important;
+}
+
+.containerOfResultsFromSpotify{
+height: 95%;
+overflow-y: auto;
+box-shadow: 1px 1px 30px rgb(7, 6, 6);
+}
+
+.itemResultsFromSpotify{
+position: relative;
+display: flex;
+align-items: center;
+width: 100%;
+height: 80px;
+padding:  15px 0;
+box-shadow: 1px 1px 30px rgb(7, 6, 6);
+
+}
+
+.spotifyIframe{
+  height: 100%;
+  width: 100%;
+  opacity: .72;
+  padding-right: 42px;
+  transition: all .3s;
+  
+}
+.spotifyIframe:hover {
+  opacity: 1;
+}
+
+.btnAddToQueue{
+ position: absolute;
+ right: -42px;
+border: 42px solid transparent;
+border-left:42px solid #1cd86160 ;
+cursor: pointer;
+}
+.btnAddToQueue:hover {
+  border: 42px solid transparent;
+border-left:42px solid #1CD860 ;
+}
+
+.RigthSide_Container{
+height: 100%;
+width: 35%;
+}
+
+.nameField{
+  width: 100%;
+  height: 5%;
+  padding: 0 10px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  padding: 0;
+  margin: 0;
+  
+}
+.nameField:focus {
+  background: white;
+}
+
+.queueOfSongs{
+  padding: 0;
+  text-align: center;
+  background: rgba(5, 4, 4, 0.808);
+  height: 25%;
+  overflow-y: auto;
+  box-shadow: 0 5px 5px white;
+  position: relative;
+}
+
+.card{
+  position: absolute;
+  bottom: 0;
+}
+.ol_queueOfSongs{
+  padding: 0px;
+  
+}
+
+
+.li_queueOfSongs{
+  padding: 0px;
+  margin: 0 0 10px 23px;
+}
+
+.render-chat{
+  height: 70%;
+  box-shadow: 1px 1px 30px rgb(7, 6, 6);
+  position: relative;
+  overflow-y: auto;
+  background: rgba(5, 4, 4, 0.808);
+
+}
+
+.ContainerSessionPage_message{
+width: 100%;
+height: 40px;
+position: fixed;
+bottom: 0;
+padding: 0;
+border: none;
+box-shadow: 5px 10px #0e0e0e;
+background: #1CD860;
+}
+
+.ContainerSessionPage_input{
+width: 98%;
+height: 100%;
+padding:  0 250px 0  2px;
+margin: 0;
+}
+
+.btnSendMessegeSessionPage{
+position: fixed;
+bottom:0;
+right: 0px;
+height: 40px;
+background-color: #1CD860;
+border-radius: 0;
+padding: 10px;
+
+}

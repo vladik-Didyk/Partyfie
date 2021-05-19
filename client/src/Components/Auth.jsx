@@ -21,7 +21,6 @@ const AuthProvider = (props) => {
   const [token, setToken] = useState();
 
   const saveToken = async (token) => {
-    console.log("here");
     setToken(token);
     await localforage.setItem(tokenKey, token);
   };

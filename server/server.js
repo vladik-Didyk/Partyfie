@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
-const cors = require("cors");
 const io = require("socket.io")(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -15,14 +14,13 @@ app.use(require("cors")());
 
 app.use(express.json());
 app.use("/session", sessionRouter);
-
 io.on("connection", (socket) => {
-  console.log("Connected");
-
-  socket.on("play", (playMsg) => {
-    io.emit("play", playMsg);
+  socket.on("message", ({ username, chatMessage }) => {
+    io.emit("message", { username, chatMessage });
   });
-  socket.on("stop", (msg) => io.emit("stop"));
+  socket.on("song_queued", (track) => {
+    io.emit("song_queued", track);
+  });
 });
 
 const PORT = process.env.PORT || 8080;
