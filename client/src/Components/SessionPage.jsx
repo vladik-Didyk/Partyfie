@@ -217,9 +217,6 @@ export default function SessionPage() {
                             })}
                         </ol>
                     </div>
-
-
-
                 </div>
 
 
@@ -233,6 +230,8 @@ export default function SessionPage() {
                         uris={queue}
                         showSaveIcon
                     />}
+
+              
                 </div>
 
                 <div className="render-chat">
