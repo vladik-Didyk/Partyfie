@@ -1,7 +1,9 @@
-#formBasicEmail{ 
-
+body{ 
     font-family: "Roboto", sans-serif;
     font-style: bold;
+}
+.content{ 
+    background: url(./CreateS.js);
 }
 .create-session{
     color: #ADFF2E;
@@ -13,7 +15,4 @@
     width: 70px;
     height: 70px;
     margin-bottom: 2rem;
-}
-.reset{
-    color: black;
 }
