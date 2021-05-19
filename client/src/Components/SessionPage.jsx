@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import "../App.css";
 import axios from "axios";
 import Player from "../Components/player/Player"
+import '../Components/SessionPage.css'
 
 export default function SessionPage() {
     const { token } = useAuth();
@@ -53,13 +54,12 @@ export default function SessionPage() {
     }
 
     async function handleOnSubmit(event) {
-        event.preventDefault();
         if (searchText.length === 0) {
             return;
         }
         searchText.replace(" ", "%20");
         const response = await axios.get(
-            `https://api.spotify.com/v1/search?q=${searchText}&type=track&limit=5&offset=0`,
+            `https://api.spotify.com/v1/search?q=${searchText}&type=track&limit=15&offset=0`,
             getAuthConfig(token)
         );
         if (response.data.tracks.items.length !== 0) {
@@ -68,8 +68,10 @@ export default function SessionPage() {
     }
 
     async function handleOnAddQueue(uri) {
-        const response = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
+      \
+        const response = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, { uri });
         if (response.data.queue) {
+
             setQueue(response.data.queue);
         }
     }
@@ -88,6 +90,7 @@ export default function SessionPage() {
         async function fetchSessionQueue() {
             const response = await axios.get(`http://localhost:8080/session/${sessionId}/queue`);
             if (response.data.queue) {
+
                 setQueue(response.data.queue);
             }
         }
@@ -104,24 +107,37 @@ export default function SessionPage() {
         return () => socketRef.current.disconnect();
     }, [chat]);
 
+
+
+    const style = !state.name.trim() ? { background: 'white', } : null
+
     return (
         <div className="sessionp">
-            <form onSubmit={(event) => handleOnSubmit(event)}>
-                <label htmlFor="spotify-search"></label>
-                <input
-                    type="text"
-                    id="spotify-search"
-                    onChange={(event) => setSearchText(event.target.value)}
-                />
-                <button type="submit">Search</button>
-            </form>
-            {searchResults && (
-                <ul>
-                    {searchResults.map((result) => {
-                        return (
-                            <>
-                                <li key={result.id}>
+            <div className='leftSide_Container'>
+                <div className="searchSessionp" >
+                    <label htmlFor="spotify-search"></label>
+                    <input
+                        className='inputSearchSessionp'
+                        type="text"
+                        id="spotify-search"
+                        onChange={(event) => setSearchText(event.target.value)}
+                    />
+                    <button
+                        className="sessionBtnOfSearch BtnSessionZero"
+                        type="submit"
+                        onClick={(event) => handleOnSubmit(event)}
+                    >Search</button>
+                </div>
+                <div className='containerOfResultsFromSpotify'>
+                    {searchResults && (
+
+                        searchResults.map((result) => {
+
+                            return (
+                                <div className='itemResultsFromSpotify'>
+
                                     <iframe
+                                        className='spotifyIframe'
                                         title={result.uri}
                                         src={`https://open.spotify.com/embed/track/${result.id}`}
                                         width="300"
@@ -131,51 +147,76 @@ export default function SessionPage() {
                                         chooseTrack={chooseTrack}
                                         allow="encrypted-media"
                                     ></iframe>
-                                </li>
-                                <button
-                                    onClick={() => handleOnAddQueue(result.uri)}
-                                >
-                                    Add to queue
-                                </button>
-                            </>
-                        );
-                    })}
-                </ul>
-            )}
-            <div className="queue" style={{ border: "1px solid black"}}>
-                <h1>Queue</h1>
-                    {queue.map((song) => {
-                        return <li key={song}>{song}</li>;
-                    })}
+
+                                    <button
+                                        className='btnAddToQueue BtnSessionZero'
+                                        onClick={() => handleOnAddQueue(result.uri)}
+                                    >
+
+                                    </button>
+                                </div>
+                            );
+                        })
+
+                    )}
+                </div>
             </div>
-            <div className="card">
-                <form onSubmit={onMessageSubmit}>
-                    <h1>Messenger</h1>
-                    <div className="name-field">
-                        <input
-                            name="name"
-                            onChange={(e) => onTextChange(e)}
-                            value={state.name}
-                            label="Name"
-                        />
-                    </div>
+
+            <div className='RigthSide_Container'>
+
+                <input
+                    className="nameField"
+                    name="name"
+                    onChange={(e) => onTextChange(e)}
+                    value={state.name}
+                    label="Name"
+                    autoFocus={true}
+                    style={style}
+                    placeholder='What is your name?'
+                />
+
+                <div className="queueOfSongs">
+                    <h1 style={{ 'color': 'white' }}>Queue</h1>
+                    <p style={{
+                        "textDecoration": 'underline',
+                        'color': 'white'
+                    }}
+                    >Press green triangle to add song</p>
+                    <ol className='ol_queueOfSongs'>
+                        {queue.map((song) => {
+                            return <li className='li_queueOfSongs'
+                            style={{ 'color': 'white' }}
+                            key={song}>{song}
+                            </li>
+                        })}
+                    </ol>
+
+                </div>
+
+                <div className="card">
                     <div>
+                        <Player token={token} trackUri={playingTrack?.uri} />
+                    </div>
+                </div>
+
+                <div className="render-chat">
+                    <h1 style={{ 'color': 'white' }}>Messenger</h1>
+                    {renderChat()}
+                    <div className='ContainerSessionPage_message'>
+
                         <input
+                            className='ContainerSessionPage_input'
                             name="message"
                             onChange={(e) => onTextChange(e)}
                             value={state.message}
                             label="Message"
+                            placeholder="Don't be shy... Write something"
                         />
+                        <button className="btnSendMessegeSessionPage BtnSessionZero"
+                            onClick={onMessageSubmit}>Add</button>
                     </div>
-                    <button>Send Message</button>
-                </form>
-                <div className="render-chat">
-                    <h1>Chat Log</h1>
-                    {renderChat()}
                 </div>
-                <div>
-                    <Player token = {token} trackUri={playingTrack?.uri} />
-                </div>
+
             </div>
         </div>
     );
