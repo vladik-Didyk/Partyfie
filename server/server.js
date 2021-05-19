@@ -18,6 +18,9 @@ io.on("connection", (socket) => {
   socket.on("message", ({ name, message }) => {
     io.emit("message", { name, message });
   });
+  socket.on("song_queued", (track) => {
+    io.emit("song_queued", track);
+  });
 });
 
 const PORT = process.env.PORT || 8080;

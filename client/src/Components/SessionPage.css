@@ -126,8 +126,13 @@ width: 35%;
   height: 25%;
   overflow-y: auto;
   box-shadow: 0 5px 5px white;
+  position: relative;
 }
 
+.card{
+  position: absolute;
+  bottom: 0;
+}
 .ol_queueOfSongs{
   padding: 0px;
   
@@ -138,8 +143,6 @@ width: 35%;
   padding: 0px;
   margin: 0 0 10px 23px;
 }
-
-
 
 .render-chat{
   height: 70%;

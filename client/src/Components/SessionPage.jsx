@@ -15,6 +15,7 @@ export default function SessionPage() {
     const [chat, setChat] = useState([]);
     const [playingTrack, setPlayingTrack] = useState();
     const [queue, setQueue] = useState([]);
+    const [username, setUsername] = useState('')
     const socketRef = useRef();
 
     const sessionId = "60a3eca767ff83bffd970bfa";
@@ -39,7 +40,7 @@ export default function SessionPage() {
         return chat.map(({ name, message }, index) => (
             <div key={index}>
                 <h3>
-                    {name}: <span>{message}</span>
+                    {name}: <span style={{ 'color': 'white' }}>{message}</span>
                 </h3>
             </div>
         ));
@@ -68,13 +69,26 @@ export default function SessionPage() {
     }
 
     async function handleOnAddQueue(uri) {
-      \
-        const response = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, { uri });
-        if (response.data.queue) {
 
-            setQueue(response.data.queue);
-        }
+        await axios.post(`http://localhost:8080/session/${sessionId}/queue`, { uri });
+        socketRef.current.emit("song_queued", uri);
+        const uriSplit = uri.split(":");
+        await axios.post(`https://api.spotify.com/v1/me/player/queue?uri=${uriSplit[0]}%3A${uriSplit[1]}%3A${uriSplit[2]}&device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+        console.log("uri", uri);
+        chooseTrack(uri);
     }
+
+    useEffect(() => {
+        async function fetchUsername() {
+            const response = await axios.get("https://api.spotify.com/v1/me", getAuthConfig(token));
+            setUsername(response.data.display_name);
+        }
+        try {
+            fetchUsername();
+        } catch (err) {
+            console.log(err);
+        }
+    }, [token]);
 
     useEffect(() => {
         async function fetchSpotifyDevice() {
@@ -104,8 +118,30 @@ export default function SessionPage() {
         socketRef.current.on("message", ({ name, message }) => {
             setChat([...chat, { name, message }]);
         });
+        socketRef.current.on("song_queued", async (track) => {
+            try {
+                const prev = queue;
+                setQueue([...queue, track]);
+                // if (prev.length === 0) {
+                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+                //     chooseTrack(track);
+                // }
+                // else {
+                //     let response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
+                //     console.log(response.data);
+                //     // while (response.data.item.uri !== track) {
+                //     //     setTimeout(async () => {
+                //     //         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
+                //     //     }, 3000);
+                //     // }
+                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+                // }
+            } catch (err) {
+                console.log(err);
+            }
+        });
         return () => socketRef.current.disconnect();
-    }, [chat]);
+    }, [chat, queue, token, spotifyDevice]);
 
 
 
@@ -185,19 +221,20 @@ export default function SessionPage() {
                     <ol className='ol_queueOfSongs'>
                         {queue.map((song) => {
                             return <li className='li_queueOfSongs'
-                            style={{ 'color': 'white' }}
-                            key={song}>{song}
+                                style={{ 'color': 'white' }}
+                                key={song}>{song}
                             </li>
                         })}
                     </ol>
 
-                </div>
+                    <div className="card">
 
-                <div className="card">
-                    <div>
-                        <Player token={token} trackUri={playingTrack?.uri} />
+                        <Player token={token} trackUri={playingTrack ? playingTrack : ""} />
+
                     </div>
                 </div>
+
+
 
                 <div className="render-chat">
                     <h1 style={{ 'color': 'white' }}>Messenger</h1>
