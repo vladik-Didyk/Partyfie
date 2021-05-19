@@ -38,6 +38,7 @@ const HomePage = (props) => {
             }
         }
         getToken();
+        console.log(token);
     });
 
     return (

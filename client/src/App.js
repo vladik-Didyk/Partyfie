@@ -47,6 +47,11 @@ function AppRouter() {
         <Route path="/profile">
          <Profile/>
         </Route>
+        <Route path='/changeUserDetails' component={() => { 
+     window.location.href = 'https://www.spotify.com/us/account/overview/?utm_source=spotify&utm_medium=menu&utm_campaign=your_account'; 
+     return null;
+}}/>
+
             </Switch>
         </Router>
     )

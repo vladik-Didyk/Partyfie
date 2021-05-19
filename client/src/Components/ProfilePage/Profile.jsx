@@ -1,39 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import NavBar from '../NavBar/NavBar';
-
-
-
+import { useAuth } from "../Auth";
+import { Card, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 function Profile() {
+    const { currentUser } = useAuth();
+    
     return (
         <>
             <NavBar/>
              <div className="showcase">
 
-<table className="tg">
-<thead>
-  <tr>
-    <th className="tg-biwy">Username</th>
-    <th className="tg-p1dc"></th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td className="tg-p1dc">Spotify Link</td>
-    <td className="tg-p1dc"></td>
-  </tr>
-  <tr>
-    <td className="tg-p1dc">User Detail I:</td>
-    <td className="tg-p1dc"></td>
-  </tr>
-  <tr>
-    <td className="tg-p1dc">User Detail II:</td>
-    <td className="tg-p1dc"></td>
-  </tr>
-</tbody>
-</table>
-
-
+             <Card style={{ width: '18rem' }}>
+  <Card.Body>
+    <Card.Title>Username: {currentUser.data.display_name}</Card.Title>
+    <Card.Title>Spotify Profile Link: {currentUser.data.external_urls.spotify}</Card.Title>
+    <Card.Text>
+    </Card.Text>
+   <Link to="/changeUserDetails">Change User Details </Link>
+  </Card.Body>
+</Card>
 
             </div>
             <footer className="footer">
