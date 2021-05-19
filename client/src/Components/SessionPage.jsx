@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import "../App.css";
 import axios from "axios";
+import Player from "../Components/player/Player"
 
 export default function SessionPage() {
     const { token } = useAuth();
@@ -11,6 +12,7 @@ export default function SessionPage() {
     const [spotifyDevice, setSpotifyDevice] = useState("");
     const [state, setState] = useState({ message: "", name: "" });
     const [chat, setChat] = useState([]);
+    const [playingTrack, setPlayingTrack] = useState();
     const [queue, setQueue] = useState([]);
     const [username, setUsername] = useState("");
     const socketRef = useRef();
@@ -20,6 +22,11 @@ export default function SessionPage() {
     const onTextChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value });
     };
+
+    const chooseTrack = (track) => {
+        setPlayingTrack(track)
+        setSearchText("")
+    }
 
     const onMessageSubmit = (e) => {
         const { name, message } = state;
@@ -158,6 +165,7 @@ export default function SessionPage() {
                                         height="80"
                                         frameBorder="0"
                                         allowtransparency="true"
+                                        chooseTrack={chooseTrack}
                                         allow="encrypted-media"
                                     ></iframe>
                                 </li>
@@ -201,6 +209,9 @@ export default function SessionPage() {
                 <div className="render-chat">
                     <h1>Chat Log</h1>
                     {renderChat()}
+                </div>
+                <div>
+                    <Player token = {token} trackUri={playingTrack?.uri} />
                 </div>
             </div>
         </div>

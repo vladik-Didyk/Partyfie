@@ -43,7 +43,6 @@ function AppRouter() {
           {auth.token && <> <NavBar/> <HomePage /> </> }
           {!auth.token && <HomePage />}
         </Route>
-
         <Route exact path="/session">
           <SessionPage />
         </Route>
