@@ -1,83 +1,94 @@
-import React, {useState, useEffect} from 'react'
-import createS from './CreateS.jpg'
-import Button from 'react-bootstrap/Button'
-import { Container, Col, Row, Form } from 'react-bootstrap';
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import createS from "./CreateS.jpg";
+import Button from "react-bootstrap/Button";
+import { Container, Col, Row, Form } from "react-bootstrap";
+import axios from "axios";
 
 export default function CreateS() {
-    const [sessionName, setSessionName] = useState('');
-    const [sessionPass, setSessionPass] = useState('');
-    const [sessionUsers, setSessionUsers] = useState('');
+  const [nameSession, setNameSession] = useState("");
+  const [sessionPass, setSessionPass] = useState("");
+  const [sessionUsers, setSessionUsers] = useState("");
 
-    const [sessionList, setSessionList] = useState([]);
+  const [sessionList, setSessionList] = useState([]);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
-        const sessionList = {sessionName, sessionPass, sessionUsers};
-        await axios.post('http://localhost:8080/session/create',{
-            sessionName , sessionPass , sessionUsers
-        })
-    }
-    
-    function handleChange(event) {
-        setSessionName({ ...sessionList, [sessionList]: event.target.value });
-    }
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const sessionList = { sessionName, sessionPass, sessionUsers };
+    await axios.post("http://localhost:8080/session/create", {
+      sessionName: nameSession,
+      password: sessionPass,
+      maxNumListeners: sessionUsers,
+    });
+  }
 
-    return (
-        <div>
-            <Container className='mt-5 pt-5 content'>
-                <Row>
-                    <Col lg={4} md={6} sm={12}>
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label style={{ "textTransform": "uppercase" }}>Create Session Name</Form.Label>
-                                
-                                <Form.Control 
-                                type="text" 
-                                placeholder="" 
-                                autoComplete="off" 
-                                value={sessionName} 
-                                onChange={(event) => { setSessionName(event.target.value) }} />
-                            </Form.Group>
-                            <Form.Group className='mt-2' controlId="formBasicPassword">
-                                <Form.Label style={{ "textTransform": "uppercase" }}>Password</Form.Label>
+  function handleChange(event) {
+    setNameSession({ ...sessionList, [sessionList]: event.target.value });
+  }
 
-                                <Form.Control 
-                                type="password" 
-                                placeholder="" 
-                                autoComplete="off"
-                                value={sessionPass} 
-                                onChange={(event) => setSessionPass(event.target.value)}  />
-                            </Form.Group>
-                            <Form.Group className='mt-2' controlId="exampleForm.ControlSelect1">
-                                <Form.Label 
-                                style={{ "textTransform": "uppercase" }}
-                                
-                                >Number Of Participants</Form.Label>
-                                <Form.Control as="select" 
-                                value={sessionUsers}
-                                onChange={(event)=>setSessionUsers(event.target.value)}>
-                                    <option value= "1">1</option>
-                                    <option value= "2">2</option>
-                                    <option value= "3" >3</option>
-                                    <option value= "4">4</option>
-                                    <option value= "5">5</option>
-                                </Form.Control>
-                            </Form.Group>
+  return (
+    <div>
+      <Container className="mt-5 pt-5 content">
+        <Row>
+          <Col lg={4} md={6} sm={12}>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label style={{ textTransform: "uppercase" }}>
+                  Create Session Name
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder=""
+                  autoComplete="off"
+                  value={nameSession}
+                  onChange={(event) => {
+                    setSessionName(event.target.value);
+                  }}
+                />
+              </Form.Group>
+              <Form.Group className="mt-2" controlId="formBasicPassword">
+                <Form.Label style={{ textTransform: "uppercase" }}>
+                  Password
+                </Form.Label>
 
-                            <Button className='create-session m-4'  type="submit">
-                                Create Session
-                            </Button>
-                        </Form>
+                <Form.Control
+                  type="password"
+                  placeholder=""
+                  autoComplete="off"
+                  value={sessionPass}
+                  onChange={(event) => setSessionPass(event.target.value)}
+                />
+              </Form.Group>
+              <Form.Group
+                className="mt-2"
+                controlId="exampleForm.ControlSelect1"
+              >
+                <Form.Label style={{ textTransform: "uppercase" }}>
+                  Number Of Participants
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  value={sessionUsers}
+                  onChange={(event) => setSessionUsers(event.target.value)}
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </Form.Control>
+              </Form.Group>
 
-                    </Col>
+              <Button className="create-session m-4" type="submit">
+                Create Session
+              </Button>
+            </Form>
+          </Col>
 
-                    <Col lg={8} md={6} sm={12}>
-                        <img className="w-100" src={createS} alt='img_create_session' />
-                    </Col>
-                </Row>
-
-            </Container>
-        </div>
-    )
+          <Col lg={8} md={6} sm={12}>
+            <img className="w-100" src={createS} alt="img_create_session" />
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
 }
