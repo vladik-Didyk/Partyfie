@@ -25,6 +25,7 @@ export default function SessionPage() {
     const chooseTrack = (track) => {
         setPlayingTrack(track)
         setSearchText("")
+        console.log(playingTrack)
     }
 
     const onMessageSubmit = (e) => {

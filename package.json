@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "localforage": "^1.9.0"
+    "localforage": "^1.9.0",
+    "react-spotify-web-playback": "^0.8.1"
   }
 }
