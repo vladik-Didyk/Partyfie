@@ -26,6 +26,7 @@ export default function SessionPage() {
     const chooseTrack = (track) => {
         setPlayingTrack(track)
         setSearchText("")
+        setSearchResults([])
     }
 
     const onMessageSubmit = (e) => {
@@ -73,6 +74,8 @@ export default function SessionPage() {
         socketRef.current.emit("song_queued", uri);
         const uriSplit = uri.split(":");
         await axios.post(`https://api.spotify.com/v1/me/player/queue?uri=${uriSplit[0]}%3A${uriSplit[1]}%3A${uriSplit[2]}&device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+        console.log("uri", uri);
+        chooseTrack(uri);
     }
 
     useEffect(() => {
@@ -80,7 +83,6 @@ export default function SessionPage() {
             const response = await axios.get("https://api.spotify.com/v1/me", getAuthConfig(token));
             setUsername(response.data.display_name);
         }
-
         try {
             fetchUsername();
         } catch (err) {
@@ -121,19 +123,20 @@ export default function SessionPage() {
             try {
                 const prev = queue;
                 setQueue([...queue, track]);
-                if (prev.length === 0) {
-                    await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-                }
-                else {
-                    let response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
-                    console.log(response.data);
-                    // while (response.data.item.uri !== track) {
-                    //     setTimeout(async () => {
-                    //         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
-                    //     }, 3000);
-                    // }
-                    // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-                }
+                // if (prev.length === 0) {
+                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+                //     chooseTrack(track);
+                // }
+                // else {
+                //     let response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
+                //     console.log(response.data);
+                //     // while (response.data.item.uri !== track) {
+                //     //     setTimeout(async () => {
+                //     //         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
+                //     //     }, 3000);
+                //     // }
+                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+                // }
             } catch (err) {
                 console.log(err);
             }
@@ -165,7 +168,6 @@ export default function SessionPage() {
                                         height="80"
                                         frameBorder="0"
                                         allowtransparency="true"
-                                        chooseTrack={chooseTrack}
                                         allow="encrypted-media"
                                     ></iframe>
                                 </li>
@@ -211,7 +213,7 @@ export default function SessionPage() {
                     {renderChat()}
                 </div>
                 <div>
-                    <Player token = {token} trackUri={playingTrack?.uri} />
+                    <Player token = {token} trackUri={playingTrack ? playingTrack : ""} />
                 </div>
             </div>
         </div>
