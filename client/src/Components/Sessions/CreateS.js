@@ -15,7 +15,7 @@ export default function CreateS() {
         event.preventDefault();
         const sessionList = {sessionName, sessionPass, sessionUsers};
         await axios.post('http://localhost:8080/session/create',{
-            sessionName , sessionPass , sessionUsers, token
+            sessionName , sessionPass , sessionUsers
         })
     }
     

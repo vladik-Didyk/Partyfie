@@ -3,15 +3,13 @@ import { useEffect } from "react"
 import localforage from "localforage";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import NavBar from "./NavBar/NavBar"
+import NavBar from "./Components/NavBar/NavBar"
 import HomePage from "./Components/HomePage/HomePage";
 import CreateS from "./Components/Sessions/CreateS"
 import JoinS from "./Components/Sessions/JoinS"
-import { BrowserRouter, Route, Switch } from "react-router-dom"
-
-
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import AuthProvider, { useAuth } from "./Components/Auth";
 //https://accounts.spotify.com/authorize?client_id=5fe01282e94241328a84e7c5cc169164&redirect_uri=http:%2F%2Fexample.com%2Fcallback&scope=user-read-private%20user-read-email&response_type=token&state=123
-
 
 
 const CLIENT_ID = "0a933f7d91e64b9096efbc218edaa4cc";
@@ -36,6 +34,7 @@ const getReturnedParamsFromSpotifyAuth = (hash) => {
 }
 
 function App() {
+  let auth = useAuth();
   useEffect(() => {
     if (window.location.hash) {
       const {
@@ -61,18 +60,24 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Route>
-          <NavBar />
-          <Switch>
-            <Route exact path='/' component={HomePage} />
-            <Route exact path='/session/create' component={CreateS} />
-            <Route exact path='/session/join' component={JoinS} />
-          </Switch>
-        </Route>
-      </BrowserRouter>
+      <AuthProvider>
+        <Router>
+          <Route>
+            <NavBar />
+            <Switch>
+              <Route exact path="/">
+                {auth.token && <> <NavBar /> <HomePage /> </>}
+                {!auth.token && <HomePage />}
+              </Route>
+              <Route exact path='/session/create' component={CreateS} />
+              <Route exact path='/session/join' component={JoinS} />
+            </Switch>
+          </Route>
+        </Router>
+      </AuthProvider>
     </>
-  );
+
+  )
 }
 
 export default App;

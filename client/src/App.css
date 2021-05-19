@@ -1,4 +1,3 @@
-
 body {
   margin: 0;
   padding: 0;
@@ -6,19 +5,22 @@ body {
   background-color: white;
   font-family: "Roboto", sans-serif;
 }
+h1,h4,p{
+  margin: 0px
+}
 .login_form {
   @include flexbox;
   @include flex(center);
   @include justify(center);
   @include box-pack(center);
   -webkit-align-items: center;
-    align-items: center;
+  align-items: center;
 }
 .loginToSpotifyAccount {
   width: 94%;
   margin: 2em 3% 0;
   border: none;
-  background: #1fd100;
+  background: #1CD860;
   padding: 1em 0;
   font-size: 1.25em;
   text-transform: uppercase;
@@ -26,13 +28,26 @@ body {
   color: white;
   @include border-radius(5px);
   outline: none;
-  @include trans(all, .25s);
+  @include trans(all, 0.25s);
   cursor: pointer;
   border-radius: 30px;
   width: 50%;
-  margin-left: 25%;
+  margin-left: 10%;
+  margin-top: -10%;
 
 }
-button:focus,button:hover {
+button:focus,
+button:hover {
   background: #262626;
 }
+
+.sessionp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: sandybrown;
+  margin-top: 65px;
+  text-align: center;
+  
+}
+

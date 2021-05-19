@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
@@ -16,15 +17,43 @@ app.get('/', (req, res) => {
     .status(200)
     .send('Hello, world!')
     .end();
-});
- 
-// Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
+=======
+const express = require("express");
+const app = express();
+const server = require("http").Server(app);
+const cors = require("cors");
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+>>>>>>> main
 });
 
+const sessionRouter = require("./routes/session");
+
+app.use(require("cors")());
+
+app.use(express.json());
+app.use("/session", sessionRouter);
+
+io.on("connection", (socket) => {
+  console.log("Connected");
+
+  socket.on("play", (playMsg) => {
+    io.emit("play", playMsg);
+  });
+  socket.on("stop", (msg) => io.emit("stop"));
+});
+
+const PORT = process.env.PORT || 8080;
+
+server.listen(PORT, () => {
+  console.log(`Example app listening at http://localhost:${PORT}`);
+  console.log("Press Ctrl+C to quit.");
+});
+
+<<<<<<< HEAD
 app.post('/', (req, res) => {
     res
       .status(200)
@@ -37,3 +66,8 @@ app.put('/', (req, res) => {
       .send('Hello, world!')
       .end();
   }); 
+=======
+app.get("/", (req, res) => {
+  res.status(200).send("Hello, world!").end();
+});
+>>>>>>> main
