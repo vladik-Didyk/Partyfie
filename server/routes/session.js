@@ -48,7 +48,7 @@ router.post("/:id/queue", async (req, res, next) => {
     const { id } = req.params;
     const { uri } = req.body;
     const updatedQueue = await addToQueue(id, uri);
-    res.status(201).send({ queue: updatedQueue })
+    res.status(201).send({ queue: updatedQueue });
   } catch (err) {
     next(err);
   }

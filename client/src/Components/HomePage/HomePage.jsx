@@ -4,7 +4,7 @@ import "./HomeCss.css";
 
 const HomePage = (props) => {
 
-    const { token, saveToken } = useAuth();
+    const { saveToken } = useAuth();
 
     const CLIENT_ID = "0a933f7d91e64b9096efbc218edaa4cc";
     const REDIRECT_URL_AFTER_LOGIN = "http://localhost:3000";

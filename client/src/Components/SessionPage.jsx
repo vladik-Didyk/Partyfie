@@ -12,6 +12,7 @@ export default function SessionPage() {
     const [state, setState] = useState({ message: "", name: "" });
     const [chat, setChat] = useState([]);
     const [queue, setQueue] = useState([]);
+    const [username, setUsername] = useState("");
     const socketRef = useRef();
 
     const sessionId = "60a3eca767ff83bffd970bfa";
@@ -61,20 +62,35 @@ export default function SessionPage() {
     }
 
     async function handleOnAddQueue(uri) {
-        const response = await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
-        if (response.data.queue) {
-            setQueue(response.data.queue);
-        }
+        await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
+        socketRef.current.emit("song_queued", uri);
+        const uriSplit = uri.split(":");
+        await axios.post(`https://api.spotify.com/v1/me/player/queue?uri=${uriSplit[0]}%3A${uriSplit[1]}%3A${uriSplit[2]}&device_id=${spotifyDevice}`, {}, getAuthConfig(token));
     }
 
     useEffect(() => {
+        async function fetchUsername() {
+            const response = await axios.get("https://api.spotify.com/v1/me", getAuthConfig(token));
+            setUsername(response.data.display_name);
+        }
+
+        try {
+            fetchUsername();
+        } catch (err) {
+            console.log(err);
+        }
+    }, [token]);
+
+    useEffect(() => {
         async function fetchSpotifyDevice() {
-            const response = await axios.get(
-                "https://api.spotify.com/v1/me/player/devices",
-                getAuthConfig(token)
-            );
-            if (response.data.devices.length !== 0) {
-                setSpotifyDevice(response.data.devices[0].id);
+            if (token){
+                const response = await axios.get(
+                    "https://api.spotify.com/v1/me/player/devices",
+                    getAuthConfig(token)
+                );
+                if (response.data.devices.length !== 0) {
+                    setSpotifyDevice(response.data.devices[0].id);
+                }
             }
         }
 
@@ -94,8 +110,29 @@ export default function SessionPage() {
         socketRef.current.on("message", ({ name, message }) => {
             setChat([...chat, { name, message }]);
         });
+        socketRef.current.on("song_queued", async (track) => {
+            try {
+                const prev = queue;
+                setQueue([...queue, track]);
+                if (prev.length === 0) {
+                    await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+                }
+                else {
+                    let response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
+                    console.log(response.data);
+                    // while (response.data.item.uri !== track) {
+                    //     setTimeout(async () => {
+                    //         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
+                    //     }, 3000);
+                    // }
+                    // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        });
         return () => socketRef.current.disconnect();
-    }, [chat]);
+    }, [chat, queue, token, spotifyDevice]);
 
     return (
         <div className="sessionp">
@@ -113,7 +150,7 @@ export default function SessionPage() {
                     {searchResults.map((result) => {
                         return (
                             <>
-                                <li key={result.id}>
+                                <li key={result.uri}>
                                     <iframe
                                         title={result.uri}
                                         src={`https://open.spotify.com/embed/track/${result.id}`}
@@ -137,7 +174,7 @@ export default function SessionPage() {
             <div className="queue" style={{ border: "1px solid black"}}>
                 <h1>Queue</h1>
                     {queue.map((song) => {
-                        return <li key={song}>{song}</li>;
+                        return <li key={song}>{song} added by {username}</li>;
                     })}
             </div>
             <div className="card">
