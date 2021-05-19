@@ -1,6 +1,9 @@
 import React from 'react';
 import NavBar from '../NavBar/NavBar';
-import css from './Profile.module.css';
+
+
+
+
 function Profile() {
     return (
         <>
@@ -53,5 +56,7 @@ function Profile() {
         </>
     )
 }
+
+
 
 export default Profile;
