@@ -44,17 +44,6 @@ function AppRouter() {
           {auth.token && <> <NavBar/> <HomePage /> </> }
           {!auth.token && <HomePage />}
         </Route>
-
-  
-                <Route exact path="/">
-                    <HomePage />
-                </Route>
-                <Route exact path="/session">
-                    <SessionPage />
-                </Route>
-                <Route exact path="/Profile">
-                    <Profile />
-                </Route>
             </Switch>
         </Router>
     )
