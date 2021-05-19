@@ -71,10 +71,6 @@ function App() {
           </Switch>
         </Route>
       </BrowserRouter>
-        <button className='loginToSpotifyAccount'
-          onClick={handleLogin}
-        > Login to Spotify
-         </button>
     </>
   );
 }
