@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
-const cors = require("cors");
 const io = require("socket.io")(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -20,7 +19,6 @@ io.on("connection", (socket) => {
     io.emit("message", { name, message });
   });
 });
-
 
 const PORT = process.env.PORT || 8080;
 

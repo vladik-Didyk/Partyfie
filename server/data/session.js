@@ -3,11 +3,20 @@ const { client } = require("../connect");
 
 const dbName = "partyfy_db";
 
+let sessions_collection = "";
+
+client.connect().then((response) => {
+    if (response.topology.s.state) {
+      console.log("Status: " + response.topology.s.state);
+      const db = client.db(dbName);
+      sessions_collection = db.collection("sessions");
+    } else {
+      console.log("Problem connecting to MongoDB");
+    }
+});
+
 async function createSession(token, password, maxNumListeners, sessionName) {
     try {
-        await client.connect();
-        const db = client.db(dbName);
-        const sessions_collection = db.collection("sessions");
         const newSession = {
             session_admin: token,
             session_name: sessionName,
@@ -21,7 +30,7 @@ async function createSession(token, password, maxNumListeners, sessionName) {
         return addedSession.ops[0];
     } catch (err) {
         console.log(err.stack);
-    } 
+    }
 }
 exports.createSession = createSession;
 
@@ -32,9 +41,6 @@ exports.joinSession = joinSession;
 
 async function getSessionQueue(sessionId) {
     try {
-        await client.connect();
-        const db = client.db(dbName);
-        const sessions_collection = db.collection("sessions");
         const session = await sessions_collection.findOne({
             _id: ObjectID(sessionId)
         });
@@ -47,22 +53,15 @@ exports.getSessionQueue = getSessionQueue;
 
 async function addToQueue(sessionId, uri) {
     try {
-        await client.connect();
-        const db = client.db(dbName);
-    
-        const sessions_collection = db.collection("sessions");
-    
         const update = await sessions_collection.updateOne(
           {
             _id: ObjectID(sessionId),
           },
           { $push: { session_queue: uri } }
         );
-        console.log(update);
         const updated_session = await sessions_collection.findOne({
             _id: ObjectID(sessionId)
         });
-        console.log(updated_session);
         return updated_session.session_queue;
       } catch (err) {
         console.log(err.stack);

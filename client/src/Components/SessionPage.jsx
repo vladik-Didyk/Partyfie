@@ -4,8 +4,6 @@ import io from "socket.io-client";
 import "../App.css";
 import axios from "axios";
 
-const socket = io.connect("http://localhost:8080/");
-
 export default function SessionPage() {
     const { token } = useAuth();
     const [searchText, setSearchText] = useState("");
@@ -28,6 +26,7 @@ export default function SessionPage() {
         e.preventDefault();
         setState({ message: "", name });
     };
+
     const renderChat = () => {
         return chat.map(({ name, message }, index) => (
             <div key={index}>
@@ -88,7 +87,7 @@ export default function SessionPage() {
 
         fetchSpotifyDevice();
         fetchSessionQueue();
-    }, [spotifyDevice, token, queue]);
+    }, [token]);
 
     useEffect(() => {
         socketRef.current = io.connect("http://localhost:8080");
