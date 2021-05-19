@@ -39,11 +39,10 @@ function AppRouter() {
   return (
     <Router>
       <Switch>
-        <Route path="/">
+        <Route exact path="/">
           {auth.token && <> <NavBar/> <HomePage /> </> }
           {!auth.token && <HomePage />}
         </Route>
-
         <Route exact path="/session">
           <SessionPage />
         </Route>
