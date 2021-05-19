@@ -1,0 +1,40 @@
+.Navbar{
+  display: flex;
+  background-color: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0.8px;
+  /* background: #1DB954; */
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.LogInAndSignIn {
+  display: flex;
+  text-decoration: none;
+  color: white;
+  padding-left: 30px ;
+  padding-right: 30px ;
+  border-left: 1px solid white;
+}
+
+.LogInAndSignIn :hover{
+  color: greenyellow;
+}
+
+.navLogo{ 
+  align-items: center;
+  width: auto;
+  height: 50px;
+}
+
+
+.navitem {
+  text-decoration: none;
+  color:whitesmoke;
+  font-weight: bold;
+  margin: 10px;
+
+}
