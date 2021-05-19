@@ -3,14 +3,16 @@ import joinS from "./JoinS.jpg";
 import Button from "react-bootstrap/Button";
 import { Container, Col, Row, Form } from "react-bootstrap";
 import axios from "axios";
+import { useAuth } from "../Auth";
 
 export default function JoinS() {
+  const { token } = useAuth();
   const [sessionName, setSessionName] = useState("");
   const [sessionPass, setSessionPass] = useState("");
-  const [sessionList, setSessionList] = useState([]);
 
   useEffect(() => {
     axios.post("http://localhost:8080/session/join", {
+      token: token,
       sessionId: sessionName,
       password: sessionPass,
     });
@@ -18,12 +20,8 @@ export default function JoinS() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const sessionList = { sessionName, sessionPass };
   }
 
-  function handleChange(event) {
-    setSessionName({ ...sessionList, [sessionList]: event.target.value });
-  }
   return (
     <div>
       <div>

@@ -9,7 +9,7 @@ const socket = io.connect("http://localhost:8080/");
 
 const audio = new Audio();
 
-export default function SessionPage() {
+export function SessionPage() {
   const { token } = useAuth();
   const [role, setRole] = useState("");
   const [playing, setPlaying] = useState(null);

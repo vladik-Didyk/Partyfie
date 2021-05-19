@@ -9,6 +9,7 @@ import CreateS from "./Components/Sessions/CreateS"
 import JoinS from "./Components/Sessions/JoinS"
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import AuthProvider, { useAuth } from "./Components/Auth";
+import { SessionPage } from './Components/SessionPage'
 //https://accounts.spotify.com/authorize?client_id=5fe01282e94241328a84e7c5cc169164&redirect_uri=http:%2F%2Fexample.com%2Fcallback&scope=user-read-private%20user-read-email&response_type=token&state=123
 
 
@@ -71,6 +72,7 @@ function App() {
               </Route>
               <Route exact path='/session/create' component={CreateS} />
               <Route exact path='/session/join' component={JoinS} />
+              <Route exact path='/session/:id' component={SessionPage} />
             </Switch>
           </Route>
         </Router>

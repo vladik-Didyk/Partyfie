@@ -3,8 +3,10 @@ import createS from "./CreateS.jpg";
 import Button from "react-bootstrap/Button";
 import { Container, Col, Row, Form } from "react-bootstrap";
 import axios from "axios";
+import { useAuth } from "../Auth";
 
 export default function CreateS() {
+  const { token } = useAuth() 
   const [nameSession, setNameSession] = useState("");
   const [sessionPass, setSessionPass] = useState("");
   const [sessionUsers, setSessionUsers] = useState("");
@@ -14,6 +16,7 @@ export default function CreateS() {
   async function handleSubmit(event) {
     event.preventDefault();
     await axios.post("http://localhost:8080/session/create", {
+      token: token,
       sessionName: nameSession,
       password: sessionPass,
       maxNumListeners: sessionUsers,
