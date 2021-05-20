@@ -38,6 +38,7 @@ const HomePage = (props) => {
             }
         }
         getToken();
+        console.log(token);
     });
     let auth = useAuth();
 
@@ -63,9 +64,9 @@ const HomePage = (props) => {
                         <li className="footer-menu-item">WebPayer</li>
                     </ul>
                     <div className="socials">
-                        <i class="fab fa-instagram"></i>
-                        <i class="fab fa-facebook"></i>
-                        <i class="fab fa-twitter"></i>
+                        <i className="fab fa-instagram"></i>
+                        <i className="fab fa-facebook"></i>
+                        <i className="fab fa-twitter"></i>
                     </div>
                 </div>
                 <div className="footer-bar">2021 Partyfie &copy; </div>

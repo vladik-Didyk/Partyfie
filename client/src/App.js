@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import AuthProvider, { useAuth } from "./Components/Auth";
 import SessionPage from "./Components/SessionPage";
+import Profile from "./Components/ProfilePage/Profile";
 
 function AppRouter() {
     const auth = useAuth();
@@ -31,6 +32,7 @@ function AppRouter() {
                     <Route exact path="/session/create" component={CreateS} />
                     <Route exact path="/session/join" component={JoinS} />
                     <Route exact path="/session/:id" component={SessionPage} />
+                    <Route exact path="/profile"><Profile /></Route>
                 </Switch>
             </Route>
         </Router>
@@ -38,7 +40,6 @@ function AppRouter() {
 }
 
 function App() {
-
     return (
         <AuthProvider>
             <AppRouter />

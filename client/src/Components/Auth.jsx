@@ -1,18 +1,17 @@
-
 import { createContext, useState, useContext } from "react";
 import localforage from "localforage";
 import { useEffect } from "react";
 import axios from "axios"
 
 export const Authcontext = createContext({
-  isInitiallyLoaded: false,
-  token: "",
-  saveToken: async (token) => {},
-  removeToken: async () => {},
+    isInitiallyLoaded: false,
+    token: "",
+    saveToken: async (token) => {},
+    removeToken: async () => {},
 });
 
 export const useAuth = () => {
-  return useContext(Authcontext)
+    return useContext(Authcontext);
 };
 
 const tokenKey = "userToken";
