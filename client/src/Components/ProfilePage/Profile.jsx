@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import { useAuth } from "../Auth";
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import axios from "axios";
+import { Link } from 'react-router-dom';
+
 
 function Profile() {
     const { token } = useAuth();
@@ -23,6 +25,10 @@ function Profile() {
         window.location.href = 'https://www.spotify.com/us/account/overview/?utm_source=spotify&utm_medium=menu&utm_campaign=your_account';
     }
 
+    function handleSpotifyClick() {
+        window.location.href = currentUser.data.external_urls.spotify;
+    }
+
     useEffect(() => {
         console.log("in use effect");
         getCurrentUser(token);
@@ -35,16 +41,19 @@ function Profile() {
                 <Card style={{ width: "18rem" }}>
                     <Card.Body>
                         <Card.Title>
-                            Username: {currentUser.data.display_name}
+                            {currentUser.data.display_name}
                         </Card.Title>
-                        <Card.Title>
-                            Spotify Profile Link: {currentUser.data.external_urls.spotify}
-                        </Card.Title>
-                        <Card.Text></Card.Text>
-                        <button 
+                       
+                          <Button variant="success" className="mb-2"
+                        onClick={handleSpotifyClick}>
+                            Spotify Profile Page
+                        </Button> 
+                        
+                       
+                        <Button variant="success"
                         onClick={handleOnClick}>
                             Change User Details
-                        </button>
+                        </Button>
                     </Card.Body>
                 </Card>
             </div>}
