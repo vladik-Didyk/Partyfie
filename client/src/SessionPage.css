@@ -1,0 +1,16 @@
+
+.searchBar {
+    margin-top: -20px;
+    width: 100%;
+    background-color: #303030;
+}
+.form-control-rounded  {
+    width: 100%;
+    height: 40px;
+  
+  }
+.submitsearch {
+    width: 100px;
+    background-color: white;
+    
+}
