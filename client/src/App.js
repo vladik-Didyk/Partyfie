@@ -18,15 +18,10 @@ function AppRouter() {
     return (
         <Router>
             <Route>
-                <NavBar />
+                {auth.token && <NavBar />}
                 <Switch>
                     <Route exact path="/">
-                        {auth.token && (
-                            <>
-                                <NavBar /> <HomePage />
-                            </>
-                        )}
-                        {!auth.token && <HomePage />}
+                        <HomePage />
                     </Route>
                     <Route exact path="/session/create" component={CreateS} />
                     <Route exact path="/session/join" component={JoinS} />
