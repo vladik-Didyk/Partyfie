@@ -3,44 +3,39 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import "../SessionPage.css";
 import axios from "axios";
-import Player from "../Components/player/Player"
+import SpotifyPlayer from 'react-spotify-web-playback'
+import { useParams } from "react-router";
+import '../Components/SessionPage.css'
 
 export default function SessionPage() {
     const { token } = useAuth();
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [spotifyDevice, setSpotifyDevice] = useState("");
-    const [state, setState] = useState({ message: "", name: "" });
+    const [chatMessage, setChatMessage] = useState('');
     const [chat, setChat] = useState([]);
-    const [playingTrack, setPlayingTrack] = useState();
     const [queue, setQueue] = useState([]);
     const [username, setUsername] = useState("");
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [nextTracks, setNextTracks] = useState([]);
     const socketRef = useRef();
+    const params = useParams();
+    const sessionId = params.id;
 
-    const sessionId = "60a3eca767ff83bffd970bfa";
-
-    const onTextChange = (e) => {
-        setState({ ...state, [e.target.name]: e.target.value });
-    };
-
-    const chooseTrack = (track) => {
-        setPlayingTrack(track)
+    const chooseTrack = () => {
         setSearchText("")
-        setSearchResults([])
     }
 
     const onMessageSubmit = (e) => {
-        const { name, message } = state;
-        socketRef.current.emit("message", { name, message });
+        socketRef.current.emit("message", { username, chatMessage });
         e.preventDefault();
-        setState({ message: "", name });
+        setChatMessage("");
     };
 
     const renderChat = () => {
-        return chat.map(({ name, message }, index) => (
+        return chat.map(({ username, chatMessage }, index) => (
             <div key={index}>
                 <h3>
-                    {name}: <span>{message}</span>
+                    {username}: <span style={{ 'color': 'white' }}>{chatMessage}</span>
                 </h3>
             </div>
         ));
@@ -55,13 +50,12 @@ export default function SessionPage() {
     }
 
     async function handleOnSubmit(event) {
-        event.preventDefault();
         if (searchText.length === 0) {
             return;
         }
         searchText.replace(" ", "%20");
         const response = await axios.get(
-            `https://api.spotify.com/v1/search?q=${searchText}&type=track&limit=5&offset=0`,
+            `https://api.spotify.com/v1/search?q=${searchText}&type=track&limit=15&offset=0`,
             getAuthConfig(token)
         );
         if (response.data.tracks.items.length !== 0) {
@@ -70,12 +64,31 @@ export default function SessionPage() {
     }
 
     async function handleOnAddQueue(uri) {
-        await axios.post(`http://localhost:8080/session/${sessionId}/queue`, {uri});
+
+        await axios.post(`http://localhost:8080/session/${sessionId}/queue`, { uri });
         socketRef.current.emit("song_queued", uri);
-        const uriSplit = uri.split(":");
-        await axios.post(`https://api.spotify.com/v1/me/player/queue?uri=${uriSplit[0]}%3A${uriSplit[1]}%3A${uriSplit[2]}&device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-        console.log("uri", uri);
-        chooseTrack(uri);
+        //const uriSplit = uri.split(":");
+        // chooseTrack(uri);
+    }
+
+    async function handlePlayerCallback(state) {
+        setIsPlaying(state.isPlaying);
+        if (state.status === "INITIALIZING") {
+            return;
+        }
+        const prev = nextTracks;
+
+        if (state.nextTracks.length < prev.length) {
+            const newQueue = queue.slice(1);
+            await axios.put(`http://localhost:8080/session/${sessionId}/queue`, { uri: queue[0] });
+            setQueue(newQueue);
+        }
+        else if (state.nextTracks.length === 0 && !state.isPlaying) {
+            await axios.put(`http://localhost:8080/session/${sessionId}/queue`, { uri: queue[0] });
+            setQueue([]);
+        }
+
+        setNextTracks(state.nextTracks);
     }
 
     useEffect(() => {
@@ -91,132 +104,152 @@ export default function SessionPage() {
     }, [token]);
 
     useEffect(() => {
-        async function fetchSpotifyDevice() {
-            if (token){
-                const response = await axios.get(
-                    "https://api.spotify.com/v1/me/player/devices",
-                    getAuthConfig(token)
-                );
-                if (response.data.devices.length !== 0) {
-                    setSpotifyDevice(response.data.devices[0].id);
-                }
-            }
-        }
-
         async function fetchSessionQueue() {
             const response = await axios.get(`http://localhost:8080/session/${sessionId}/queue`);
             if (response.data.queue) {
+                chooseTrack();
                 setQueue(response.data.queue);
+                setIsPlaying(true);
             }
         }
 
-        fetchSpotifyDevice();
-        fetchSessionQueue();
-    }, [token]);
+        try {
+            fetchSessionQueue();
+        } catch (err) {
+            console.log(err);
+        }
+
+    }, [token, sessionId]);
 
     useEffect(() => {
         socketRef.current = io.connect("http://localhost:8080");
-        socketRef.current.on("message", ({ name, message }) => {
-            setChat([...chat, { name, message }]);
+        socketRef.current.on("message", ({ username, chatMessage }) => {
+            setChat([...chat, { username, chatMessage }]);
         });
         socketRef.current.on("song_queued", async (track) => {
             try {
-                const prev = queue;
-                setQueue([...queue, track]);
-                // if (prev.length === 0) {
-                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-                //     chooseTrack(track);
-                // }
-                // else {
-                //     let response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
-                //     console.log(response.data);
-                //     // while (response.data.item.uri !== track) {
-                //     //     setTimeout(async () => {
-                //     //         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing?market=IL', getAuthConfig(token));
-                //     //     }, 3000);
-                //     // }
-                //     // await axios.post(`https://api.spotify.com/v1/me/player/next?device_id=${spotifyDevice}`, {}, getAuthConfig(token));
-                // }
+                const prev = [...queue, track];
+                setQueue(prev);
+                chooseTrack();
+                if (prev.length === 1) {
+                    setIsPlaying(true);
+                }
+                chooseTrack();
             } catch (err) {
                 console.log(err);
             }
         });
         return () => socketRef.current.disconnect();
-    }, [chat, queue, token, spotifyDevice]);
+    }, [chat, queue, token]);
+
+
+
+    // const style = !username.trim() ? { background: 'white', } : null
 
     return (
         <div className="sessionp">
-            <div className="searchBar">
-            <form onSubmit={(event) => handleOnSubmit(event)}>
-                <label htmlFor="spotify-search"></label>
-                <input
-                    className="form-control-rounded"
-                    type="text"
-                    id="spotify-search"
-                    onChange={(event) => setSearchText(event.target.value)}
-                />
-                <button className="submitsearch" type="submit">Search</button>
-            </form>
-            </div>
-            {searchResults && (
-                <ul>
-                    {searchResults.map((result) => {
-                        return (
-                            <>
-                                <li key={result.uri}>
+            <div className='leftSide_Container'>
+                <div className="searchSessionp" >
+                    <label htmlFor="spotify-search"></label>
+                    <input
+                        className='inputSearchSessionp'
+                        type="text"
+                        id="spotify-search"
+                        onChange={(event) => setSearchText(event.target.value)}
+                    />
+                    <button
+                        className="sessionBtnOfSearch BtnSessionZero"
+                        type="submit"
+                        onClick={(event) => handleOnSubmit(event)}
+                    >Search</button>
+                </div>
+                <div className='containerOfResultsFromSpotify'>
+                    {searchResults && (
+
+                        searchResults.map((result) => {
+
+                            return (
+                                <div className='itemResultsFromSpotify'>
+
                                     <iframe
+                                        className='spotifyIframe'
                                         title={result.uri}
                                         src={`https://open.spotify.com/embed/track/${result.id}`}
                                         width="300"
                                         height="80"
                                         frameBorder="0"
                                         allowtransparency="true"
+                                        chooseTrack={chooseTrack}
                                         allow="encrypted-media"
                                     ></iframe>
-                                </li>
-                                <button
-                                    onClick={() => handleOnAddQueue(result.uri)}
-                                >
-                                    Add to queue
-                                </button>
-                            </>
-                        );
-                    })}
-                </ul>
-            )}
-            <div className="queue" style={{ border: "1px solid black"}}>
-                <h1>Queue</h1>
-                    {queue.map((song) => {
-                        return <li key={song}>{song} added by {username}</li>;
-                    })}
-            </div>
-            <div className="card">
-                <form onSubmit={onMessageSubmit}>
-                    <h1>Messenger</h1>
-                    <div className="name-field">
-                        <input
-                            name="name"
-                            onChange={(e) => onTextChange(e)}
-                            value={state.name}
-                            label="Name"
-                        />
-                    </div>
-                    <div>
-                        <input
-                            name="message"
-                            onChange={(e) => onTextChange(e)}
-                            value={state.message}
-                            label="Message"
-                        />
-                    </div>
-                    <button>Send Message</button>
-                </form>
-                <div className="render-chat">
-                    <h1>Chat Log</h1>
-                    {renderChat()}
+
+                                    <button
+                                        className='btnAddToQueue BtnSessionZero'
+                                        onClick={() => handleOnAddQueue(result.uri)}
+                                    >
+
+                                    </button>
+                                </div>
+                            );
+                        })
+
+                    )}
                 </div>
-                <div>
-                    <Player token = {token} trackUri={playingTrack ? playingTrack : ""} />
+            </div>
+
+            <div className='RigthSide_Container'>
+
+                <div className="queueOfSongs">
+                    <div>
+                        <h1 style={{ 'color': 'white' }}>Queue</h1>
+                        <p style={{
+                            "textDecoration": 'underline',
+                            'color': 'white'
+                        }}
+                        >Press green triangle to add song</p>
+
+                        <ol className='ol_queueOfSongs'>
+                            {queue.map((song) => {
+                                return <li className='li_queueOfSongs'
+                                    style={{ 'color': 'white' }}
+                                    key={song}>{song} added by {username}
+                                </li>
+                            })}
+                        </ol>
+                    </div>
+                </div>
+
+
+
+                <div className='card'>
+                    {token && queue && <SpotifyPlayer
+                        autoPlay={true}
+                        callback={(state) => handlePlayerCallback(state)}
+                        token={token}
+                        play={isPlaying}
+                        uris={queue}
+                        showSaveIcon
+                    />}
+
+              
+                </div>
+
+                <div className="render-chat">
+                    <h1 style={{ 'color': 'white' }}>Messenger</h1>
+                    {renderChat()}
+                    <div className='ContainerSessionPage_message'>
+
+                        <input
+                            className='ContainerSessionPage_input'
+                            name="message"
+                            onChange={(e) => setChatMessage(e.target.value)}
+                            value={chatMessage}
+                            label="Message"
+                            placeholder="Don't be shy... Write something"
+                        />
+                        <button className="btnSendMessegeSessionPage BtnSessionZero"
+                            onClick={onMessageSubmit}>Add</button>
+                    </div>
                 </div>
             </div>
         </div>

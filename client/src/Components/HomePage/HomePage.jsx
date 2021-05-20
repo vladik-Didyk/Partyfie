@@ -4,7 +4,7 @@ import "./HomeCss.css";
 
 const HomePage = (props) => {
 
-    const { saveToken } = useAuth();
+    const { token, saveToken } = useAuth();
 
     const CLIENT_ID = "0a933f7d91e64b9096efbc218edaa4cc";
     const REDIRECT_URL_AFTER_LOGIN = "http://localhost:3000";
@@ -46,11 +46,10 @@ const HomePage = (props) => {
             <div className="showcase">
                 <div className="showcase-container">
                     <h2>Partyfie</h2>
-                    {!auth.token && <div className="description"> Welcole to partify, here we take into account your preferences and we let you share them with your peers. </div>}
-                    {!auth.token && <> <button  className='loginToSpotifyAccount' 
+                    {!token && <button  className='loginToSpotifyAccount' 
                         onClick={handleLogin}
                         > Login to Spotify 
-                    </button> </> } 
+                    </button>}
                     <p>Create playlists and share your best musics</p>
                 </div>
             </div>

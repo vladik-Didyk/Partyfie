@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createSession, joinSession, getSessionQueue, addToQueue } = require("../data/session");
+const { createSession, joinSession, getSessionQueue, addToQueue, removeFromQueue } = require("../data/session");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -26,8 +26,9 @@ router.post("/create", async (req, res, next) => {
 
 router.post("/join", async (req, res, next) => {
   try {
-    const { token, sessionId, password } = req.body;
-    await joinSession(token, sessionId, password);
+    const { token, sessionName, password } = req.body;
+    const sessionId = await joinSession(token, sessionName, password);
+    res.status(200).send({ sessionId });
   } catch (err) {
     next(err);
   }
@@ -49,6 +50,17 @@ router.post("/:id/queue", async (req, res, next) => {
     const { uri } = req.body;
     const updatedQueue = await addToQueue(id, uri);
     res.status(201).send({ queue: updatedQueue });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put("/:id/queue", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { uri } = req.body;
+    await removeFromQueue(id, uri);
+    res.status(201).send({ message: "Song removed from queue" });
   } catch (err) {
     next(err);
   }
