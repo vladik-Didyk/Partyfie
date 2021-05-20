@@ -38,7 +38,9 @@ const HomePage = (props) => {
             }
         }
         getToken();
+        console.log(token);
     });
+    let auth = useAuth();
 
     return (
         <>
@@ -49,7 +51,7 @@ const HomePage = (props) => {
                         onClick={handleLogin}
                         > Login to Spotify 
                     </button>}
-                    <p>Create playlists and share your best musics</p>
+                    <p>Create sessions and share your favorite music</p>
                 </div>
             </div>
             <footer className="footer">

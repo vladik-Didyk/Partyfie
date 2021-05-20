@@ -3,7 +3,7 @@ import joinS from "./JoinS.jpg";
 import Button from "react-bootstrap/Button";
 import { Container, Col, Row, Form } from "react-bootstrap";
 import axios from "axios";
-import { useAuth } from "../Auth";
+import { useAuth } from "../Auth";  
 import { useHistory, withRouter } from "react-router";
 
 function JoinS() {

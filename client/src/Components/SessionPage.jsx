@@ -1,7 +1,7 @@
 import { useAuth } from "./Auth";
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
-import "../App.css";
+import "../SessionPage.css";
 import axios from "axios";
 import SpotifyPlayer from 'react-spotify-web-playback'
 import { useParams } from "react-router";
@@ -35,7 +35,7 @@ export default function SessionPage() {
         return chat.map(({ username, chatMessage }, index) => (
             <div key={index}>
                 <h3>
-                    {username}: <span>{chatMessage}</span>
+                    {username}: <span style={{ 'color': 'white' }}>{chatMessage}</span>
                 </h3>
             </div>
         ));
@@ -77,17 +77,17 @@ export default function SessionPage() {
             return;
         }
         const prev = nextTracks;
-       
+
         if (state.nextTracks.length < prev.length) {
             const newQueue = queue.slice(1);
             await axios.put(`http://localhost:8080/session/${sessionId}/queue`, { uri: queue[0] });
             setQueue(newQueue);
         }
-        else if (state.nextTracks.length === 0 && !state.isPlaying){
+        else if (state.nextTracks.length === 0 && !state.isPlaying) {
             await axios.put(`http://localhost:8080/session/${sessionId}/queue`, { uri: queue[0] });
             setQueue([]);
         }
-        
+
         setNextTracks(state.nextTracks);
     }
 
@@ -118,7 +118,7 @@ export default function SessionPage() {
         } catch (err) {
             console.log(err);
         }
-        
+
     }, [token, sessionId]);
 
     useEffect(() => {
@@ -131,7 +131,7 @@ export default function SessionPage() {
                 const prev = [...queue, track];
                 setQueue(prev);
                 chooseTrack();
-                if (prev.length === 1){
+                if (prev.length === 1) {
                     setIsPlaying(true);
                 }
                 chooseTrack();
@@ -144,7 +144,7 @@ export default function SessionPage() {
 
 
 
-    const style = !username.trim() ? { background: 'white', } : null
+    // const style = !username.trim() ? { background: 'white', } : null
 
     return (
         <div className="sessionp">
@@ -198,29 +198,40 @@ export default function SessionPage() {
             </div>
 
             <div className='RigthSide_Container'>
+
                 <div className="queueOfSongs">
-                    <h1 style={{ 'color': 'white' }}>Queue</h1>
-                    <p style={{
-                        "textDecoration": 'underline',
-                        'color': 'white'
-                    }}
-                    >Press green triangle to add song</p>
-                    <ol className='ol_queueOfSongs'>
-                        {queue.map((song) => {
-                            return <li className='li_queueOfSongs'
-                                style={{ 'color': 'white' }}
-                                key={song}>{song} added by {username}
-                            </li>
-                        })}
-                    </ol>
-                        {token && queue && <SpotifyPlayer
-                            autoPlay={true}
-                            callback={(state) => handlePlayerCallback(state)}
-                            token={token}
-                            play={isPlaying}
-                            uris={queue}
-                            showSaveIcon
-                        />}
+                    <div>
+                        <h1 style={{ 'color': 'white' }}>Queue</h1>
+                        <p style={{
+                            "textDecoration": 'underline',
+                            'color': 'white'
+                        }}
+                        >Press green triangle to add song</p>
+
+                        <ol className='ol_queueOfSongs'>
+                            {queue.map((song) => {
+                                return <li className='li_queueOfSongs'
+                                    style={{ 'color': 'white' }}
+                                    key={song}>{song} added by {username}
+                                </li>
+                            })}
+                        </ol>
+                    </div>
+                </div>
+
+
+
+                <div className='card'>
+                    {token && queue && <SpotifyPlayer
+                        autoPlay={true}
+                        callback={(state) => handlePlayerCallback(state)}
+                        token={token}
+                        play={isPlaying}
+                        uris={queue}
+                        showSaveIcon
+                    />}
+
+              
                 </div>
 
                 <div className="render-chat">
